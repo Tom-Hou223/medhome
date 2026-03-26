@@ -1,0 +1,141 @@
+<view class="reminder-settings-container" style="--status-bar-height: {{statusBarHeight}}px">
+  <nav-bar title="提醒设置" showBack="{{true}}" />
+
+  <view class="content">
+    <view class="section">
+      <view class="section-title">基础设置</view>
+      
+      <van-cell-group>
+        <van-cell 
+          title="开启提醒" 
+          is-link
+        >
+          <van-switch 
+            slot="right-icon" 
+            checked="{{reminderSettings.pushEnabled}}" 
+            bind:change="onPushEnabledChange"
+            active-color="#27AE60"
+          />
+        </van-cell>
+      </van-cell-group>
+    </view>
+
+    <view class="section">
+      <view class="section-title">用药提醒</view>
+      
+      <van-cell-group>
+        <van-cell 
+          title="提醒时间" 
+          is-link
+          value="{{reminderTimeLabel}}"
+          bindtap="showReminderTimePicker"
+        />
+      </van-cell-group>
+    </view>
+
+    <view class="section">
+      <view class="section-title">效期预警</view>
+      
+      <van-cell-group>
+        <van-cell 
+          title="预警天数" 
+          is-link
+          value="{{expiryWarningLabel}}"
+          bindtap="showExpiryWarningPicker"
+        />
+      </van-cell-group>
+    </view>
+
+    <!-- 订阅消息设置 -->
+    <view class="section" wx:if="{{isLoggedIn}}">
+      <view class="section-title">微信订阅消息</view>
+
+      <van-cell-group>
+        <van-cell
+          title="药品过期提醒"
+          is-link
+          bindtap="onSubscribeExpiry"
+        >
+          <view slot="right-icon">
+            <van-tag wx:if="{{expirySubscribed}}" type="success">已订阅</van-tag>
+            <van-tag wx:else type="default">未订阅</van-tag>
+          </view>
+        </van-cell>
+
+        <van-cell
+          title="用药提醒"
+          is-link
+          bindtap="onSubscribeMedication"
+        >
+          <view slot="right-icon">
+            <van-tag wx:if="{{medicationSubscribed}}" type="success">已订阅</van-tag>
+            <van-tag wx:else type="default">未订阅</van-tag>
+          </view>
+        </van-cell>
+      </van-cell-group>
+    </view>
+
+    <view class="section">
+      <view class="section-title">其他</view>
+      
+      <van-cell-group>
+        <van-cell 
+          title="清除通知历史" 
+          is-link
+          bindtap="onClearHistory"
+        >
+          <van-icon slot="right-icon" name="delete" color="#e74c3c" />
+        </van-cell>
+      </van-cell-group>
+    </view>
+
+    <view class="actions">
+      <van-button type="default" bindtap="onReset">恢复默认</van-button>
+      <van-button type="primary" bindtap="onSave">保存设置</van-button>
+    </view>
+  </view>
+
+  <!-- 提醒时间选择器 -->
+  <van-action-sheet 
+    show="{{showReminderTimeSheet}}" 
+    bind:close="onCloseReminderTimeSheet"
+    title="选择提醒时间"
+  >
+    <van-radio-group value="{{reminderSettings.reminderTime}}" bind:change="onReminderTimeChange">
+      <van-cell-group>
+        <van-cell 
+          wx:for="{{reminderTimes}}" 
+          wx:key="value"
+          title="{{item.label}}"
+          clickable
+          data-value="{{item.value}}"
+          bindtap="selectReminderTime"
+        >
+          <van-radio slot="right-icon" name="{{item.value}}" />
+        </van-cell>
+      </van-cell-group>
+    </van-radio-group>
+  </van-action-sheet>
+
+  <!-- 预警天数选择器 -->
+  <van-action-sheet 
+    show="{{showExpiryWarningSheet}}" 
+    bind:close="onCloseExpiryWarningSheet"
+    title="选择预警天数"
+  >
+    <van-radio-group value="{{reminderSettings.expiryWarningDays}}" bind:change="onExpiryWarningDaysChange">
+      <van-cell-group>
+        <van-cell 
+          wx:for="{{expiryWarningDays}}" 
+          wx:key="value"
+          title="{{item.label}}"
+          clickable
+          data-value="{{item.value}}"
+          bindtap="selectExpiryWarning"
+        >
+          <van-radio slot="right-icon" name="{{item.value}}" />
+        </van-cell>
+      </van-cell-group>
+    </van-radio-group>
+  </van-action-sheet>
+</view>

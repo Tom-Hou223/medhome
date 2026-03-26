@@ -1,0 +1,16 @@
+{
+  "navigationBarTitleText": "提醒列表",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "nav-bar": "/components/nav-bar/nav-bar",
+    "van-tabs": "/vant/tabs/index",
+    "van-tab": "/vant/tab/index",
+    "van-tag": "/vant/tag/index",
+    "van-icon": "/vant/icon/index",
+    "van-empty": "/vant/empty/index",
+    "van-popup": "/vant/popup/index",
+    "van-button": "/vant/button/index"
+  }
+}

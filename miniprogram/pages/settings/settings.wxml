@@ -1,0 +1,220 @@
+<view class="settings-container {{isSeniorMode ? 'senior-mode' : ''}} {{isSeniorMode && seniorTheme === 'yellow' ? 'theme-yellow' : ''}}" style="--status-bar-height: {{statusBarHeight}}px">
+  <nav-bar title="系统设置" showBack="{{true}}" />
+  <view class="settings-section">
+    <view class="section-title">提醒设置</view>
+    <van-cell-group>
+      <van-cell 
+        title="开启推送" 
+        center
+      >
+        <van-switch 
+          slot="right-icon" 
+          checked="{{reminderSettings.pushEnabled}}" 
+          bind:change="onPushEnabledChange"
+          size="20px"
+        />
+      </van-cell>
+      
+      <van-cell 
+        title="通知方式" 
+        value="{{reminderSettings.notificationType === 'wechat' ? '微信通知' : '应用内提醒'}}" 
+        is-link
+        bindtap="showNotificationTypePicker"
+      />
+      
+      <van-cell 
+        title="提醒时间" 
+        value="{{reminderSettings.reminderTime}}分钟前" 
+        is-link
+        bindtap="showReminderTimePicker"
+      />
+      
+      <van-cell 
+        title="预警天数" 
+        value="{{expiryWarningLabel}}" 
+        is-link
+        bindtap="showExpiryWarningPicker"
+      />
+      
+      <van-cell 
+        title="免打扰模式" 
+        center
+      >
+        <van-switch 
+          slot="right-icon" 
+          checked="{{reminderSettings.doNotDisturb}}" 
+          bind:change="onDoNotDisturbChange"
+          size="20px"
+        />
+      </van-cell>
+      
+      <van-cell 
+        wx:if="{{reminderSettings.doNotDisturb}}"
+        title="免打扰时间" 
+        value="{{reminderSettings.doNotDisturbStart}} - {{reminderSettings.doNotDisturbEnd}}" 
+        is-link
+        bindtap="showTimePicker"
+      />
+      
+      <van-cell 
+        title="通知权限"
+        value="{{notificationAuthorized ? '已授权' : '点击授权'}}" 
+        is-link
+        bindtap="requestNotificationPermission"
+      />
+    </van-cell-group>
+  </view>
+
+  <view class="settings-section">
+    <view class="section-title">界面设置</view>
+    <van-cell-group>
+      <van-cell 
+        title="老年模式" 
+        center
+      >
+        <van-switch 
+          slot="right-icon" 
+          checked="{{isSeniorMode}}" 
+          bind:change="onSeniorModeChange"
+          size="20px"
+        />
+      </van-cell>
+      <van-cell 
+        wx:if="{{isSeniorMode}}"
+        title="字体主题" 
+        value="{{seniorTheme === 'yellow' ? '黑底黄字' : '白底黑字'}}" 
+        is-link
+        bindtap="showThemePicker"
+      />
+    </van-cell-group>
+  </view>
+
+  <!-- 主题选择器 -->
+  <van-action-sheet 
+    show="{{showThemeSheet}}" 
+    bind:close="onCloseThemeSheet"
+    title="选择字体主题"
+  >
+    <van-radio-group value="{{seniorTheme}}" bind:change="onThemeChange">
+      <van-cell-group>
+        <van-cell 
+          title="黑底黄字"
+          clickable
+          data-value="yellow"
+          bindtap="selectTheme"
+        >
+          <van-radio slot="right-icon" name="yellow" />
+        </van-cell>
+        <van-cell 
+          title="白底黑字"
+          clickable
+          data-value="white"
+          bindtap="selectTheme"
+        >
+          <van-radio slot="right-icon" name="white" />
+        </van-cell>
+      </van-cell-group>
+    </van-radio-group>
+  </van-action-sheet>
+
+  <view class="actions">
+    <van-button type="primary" block bindtap="onSave">保存设置</van-button>
+    <van-button type="default" block bindtap="onReset" style="margin-top: 16rpx;">恢复默认设置</van-button>
+    <van-button type="danger" block bindtap="onRestoreGuestData" style="margin-top: 16rpx;">恢复默认游客数据</van-button>
+  </view>
+
+  <!-- 通知方式选择器 -->
+  <van-action-sheet 
+    show="{{showNotificationTypeSheet}}" 
+    bind:close="onCloseNotificationTypeSheet"
+    title="选择通知方式"
+  >
+    <van-radio-group value="{{reminderSettings.notificationType}}" bind:change="onNotificationTypeChange">
+      <van-cell-group>
+        <van-cell 
+          wx:for="{{notificationTypes}}" 
+          wx:key="value"
+          title="{{item.label}}"
+          clickable
+          data-value="{{item.value}}"
+          bindtap="selectNotificationType"
+        >
+          <van-radio slot="right-icon" name="{{item.value}}" />
+        </van-cell>
+      </van-cell-group>
+    </van-radio-group>
+  </van-action-sheet>
+
+  <!-- 提醒时间选择器 -->
+  <van-action-sheet 
+    show="{{showReminderTimeSheet}}" 
+    bind:close="onCloseReminderTimeSheet"
+    title="选择提醒时间"
+  >
+    <van-radio-group value="{{reminderSettings.reminderTime}}" bind:change="onReminderTimeChange">
+      <van-cell-group>
+        <van-cell 
+          wx:for="{{reminderTimes}}" 
+          wx:key="value"
+          title="{{item.label}}"
+          clickable
+          data-value="{{item.value}}"
+          bindtap="selectReminderTime"
+        >
+          <van-radio slot="right-icon" name="{{item.value}}" />
+        </van-cell>
+      </van-cell-group>
+    </van-radio-group>
+  </van-action-sheet>
+
+  <!-- 预警天数选择器 -->
+  <van-action-sheet 
+    show="{{showExpiryWarningSheet}}" 
+    bind:close="onCloseExpiryWarningSheet"
+    title="选择预警天数"
+  >
+    <van-radio-group value="{{reminderSettings.expiryWarningDays}}" bind:change="onExpiryWarningDaysChange">
+      <van-cell-group>
+        <van-cell 
+          wx:for="{{expiryWarningDays}}" 
+          wx:key="value"
+          title="{{item.label}}"
+          clickable
+          data-value="{{item.value}}"
+          bindtap="selectExpiryWarning"
+        >
+          <van-radio slot="right-icon" name="{{item.value}}" />
+        </van-cell>
+      </van-cell-group>
+    </van-radio-group>
+  </van-action-sheet>
+
+  <!-- 免打扰时间选择器 -->
+  <van-popup 
+    show="{{showTimePicker}}" 
+    bind:close="onCloseTimePicker"
+    position="bottom"
+  >
+    <view class="time-picker-container">
+      <view class="time-picker-header">
+        <text bindtap="onCloseTimePicker">取消</text>
+        <text class="title">免打扰时间</text>
+        <text bindtap="confirmTimePicker">确定</text>
+      </view>
+      <view class="time-picker-content">
+        <view class="time-item">
+          <text>开始时间</text>
+          <picker mode="time" value="{{reminderSettings.doNotDisturbStart}}" bindchange="onStartTimeChange">
+            <view class="picker">{{reminderSettings.doNotDisturbStart}}</view>
+          </picker>
+        </view>
+        <view class="time-item">
+          <text>结束时间</text>
+          <picker mode="time" value="{{reminderSettings.doNotDisturbEnd}}" bindchange="onEndTimeChange">
+            <view class="picker">{{reminderSettings.doNotDisturbEnd}}</view>
+          </picker>
+        </view>
+      </view>
+    </view>
+  </van-popup>
+</view>

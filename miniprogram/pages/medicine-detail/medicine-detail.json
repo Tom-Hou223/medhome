@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "药品详情",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "van-button": "/vant/button/index"
+  }
+}

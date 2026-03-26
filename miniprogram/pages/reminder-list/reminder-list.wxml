@@ -1,0 +1,189 @@
+<view class="reminder-list-container" style="--status-bar-height: {{statusBarHeight}}px">
+  <nav-bar title="提醒列表" showBack="{{true}}" />
+
+  <view class="filter-bar">
+    <van-tabs active="{{filterType}}" bind:change="onFilterChange" color="#27AE60">
+      <van-tab title="全部" name="all" />
+      <van-tab title="今日" name="today" />
+      <van-tab title="已完成" name="completed" />
+      <van-tab title="已错过" name="missed" />
+    </van-tabs>
+  </view>
+
+  <view class="content">
+    <view wx:if="{{filterType === 'all' || filterType === 'today'}}">
+      <view class="section-title" wx:if="{{todayReminders.length > 0}}">
+        <text class="title-text">今日提醒（{{todayReminders.length}}）</text>
+        <text class="title-desc">待完成</text>
+      </view>
+
+      <view class="reminder-list">
+        <view 
+          class="reminder-item pending" 
+          wx:for="{{todayReminders}}" 
+          wx:key="id"
+          bindtap="onReminderClick"
+          data-reminder="{{item}}"
+        >
+          <view class="reminder-header">
+            <view class="time-badge">
+              <van-icon name="clock-o" size="20px" color="#27AE60" />
+              <text class="time-text">{{item.time}}</text>
+            </view>
+            <van-tag type="primary" size="medium">待完成</van-tag>
+          </view>
+          <view class="reminder-body">
+            <text class="medicine-name">{{item.medicineName}}</text>
+            <text class="member-name">{{item.memberName}}</text>
+          </view>
+          <view class="reminder-footer" wx:if="{{item.notes}}">
+            <text class="notes-text">{{item.notes}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{filterType === 'all' || filterType === 'today'}}">
+      <view class="section-title" wx:if="{{upcomingReminders.length > 0}}">
+        <text class="title-text">即将到来（{{upcomingReminders.length}}）</text>
+        <text class="title-desc">未来提醒</text>
+      </view>
+
+      <view class="reminder-list">
+        <view 
+          class="reminder-item upcoming" 
+          wx:for="{{upcomingReminders}}" 
+          wx:key="id"
+          bindtap="onReminderClick"
+          data-reminder="{{item}}"
+        >
+          <view class="reminder-header">
+            <view class="time-badge">
+              <van-icon name="clock-o" size="20px" color="#999" />
+              <text class="time-text">{{item.time}}</text>
+            </view>
+            <van-tag type="default" size="medium">即将到来</van-tag>
+          </view>
+          <view class="reminder-body">
+            <text class="medicine-name">{{item.medicineName}}</text>
+            <text class="member-name">{{item.memberName}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{filterType === 'all' || filterType === 'completed'}}">
+      <view class="section-title" wx:if="{{completedReminders.length > 0}}">
+        <text class="title-text">已完成（{{completedReminders.length}}）</text>
+        <text class="title-desc">今日完成</text>
+      </view>
+
+      <view class="reminder-list">
+        <view 
+          class="reminder-item completed" 
+          wx:for="{{completedReminders}}" 
+          wx:key="id"
+          bindtap="onReminderClick"
+          data-reminder="{{item}}"
+        >
+          <view class="reminder-header">
+            <view class="time-badge">
+              <van-icon name="passed" size="20px" color="#27AE60" />
+              <text class="time-text">{{item.time}}</text>
+            </view>
+            <van-tag type="success" size="medium">已完成</van-tag>
+          </view>
+          <view class="reminder-body">
+            <text class="medicine-name">{{item.medicineName}}</text>
+            <text class="member-name">{{item.memberName}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{filterType === 'all' || filterType === 'missed'}}">
+      <view class="section-title" wx:if="{{missedReminders.length > 0}}">
+        <text class="title-text">已错过（{{missedReminders.length}}）</text>
+        <text class="title-desc">未按时完成</text>
+      </view>
+
+      <view class="reminder-list">
+        <view 
+          class="reminder-item missed" 
+          wx:for="{{missedReminders}}" 
+          wx:key="id"
+          bindtap="onReminderClick"
+          data-reminder="{{item}}"
+        >
+          <view class="reminder-header">
+            <view class="time-badge">
+              <van-icon name="warning-o" size="20px" color="#e74c3c" />
+              <text class="time-text">{{item.time}}</text>
+            </view>
+            <van-tag type="danger" size="medium">已错过</van-tag>
+          </view>
+          <view class="reminder-body">
+            <text class="medicine-name">{{item.medicineName}}</text>
+            <text class="member-name">{{item.memberName}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:if="{{todayReminders.length === 0 && upcomingReminders.length === 0 && completedReminders.length === 0 && missedReminders.length === 0 && !loading}}">
+      <van-empty description="暂无提醒" />
+    </view>
+  </view>
+
+  <van-popup 
+    show="{{showDetailDialog}}" 
+    position="bottom" 
+    round="{{true}}"
+    closeable
+    bind:close="onCloseDetailDialog"
+  >
+    <view class="detail-dialog" wx:if="{{selectedReminder}}">
+      <view class="dialog-header">
+        <text class="dialog-title">提醒详情</text>
+      </view>
+      
+      <view class="dialog-body">
+        <view class="detail-item">
+          <text class="label">药品名称</text>
+          <text class="value">{{selectedReminder.medicineName}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="label">成员</text>
+          <text class="value">{{selectedReminder.memberName}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="label">提醒时间</text>
+          <text class="value">{{selectedReminder.time}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="label">频率</text>
+          <text class="value">{{selectedReminder.frequency === 'daily' ? '每日' : selectedReminder.frequency === 'weekly' ? '每周' : '每月'}}</text>
+        </view>
+        <view class="detail-item" wx:if="{{selectedReminder.notes}}">
+          <text class="label">备注</text>
+          <text class="value">{{selectedReminder.notes}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="label">状态</text>
+          <van-tag 
+            type="{{selectedReminder.status === 'pending' ? 'primary' : selectedReminder.status === 'completed' ? 'success' : 'danger'}}" 
+            size="medium"
+          >
+            {{selectedReminder.status === 'pending' ? '待完成' : selectedReminder.status === 'completed' ? '已完成' : '已错过'}}
+          </van-tag>
+        </view>
+      </view>
+      
+      <view class="dialog-footer">
+        <van-button type="default" bindtap="onSkipReminder" wx:if="{{selectedReminder.status === 'pending'}}">跳过</van-button>
+        <van-button type="primary" bindtap="onMarkCompleted" wx:if="{{selectedReminder.status === 'pending'}}">标记完成</van-button>
+        <van-button type="default" bindtap="onCloseDetailDialog" wx:if="{{selectedReminder.status !== 'pending'}}">关闭</van-button>
+      </view>
+    </view>
+  </van-popup>
+</view>

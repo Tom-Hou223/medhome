@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "家庭管理",
+  "usingComponents": {
+    "van-button": "/vant/button/index",
+    "van-loading": "/vant/loading/index",
+    "van-icon": "/vant/icon/index"
+  }
+}

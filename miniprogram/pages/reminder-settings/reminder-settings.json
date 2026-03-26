@@ -1,0 +1,16 @@
+{
+  "navigationBarTitleText": "提醒设置",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "nav-bar": "/components/nav-bar/nav-bar",
+    "van-cell": "/vant/cell/index",
+    "van-cell-group": "/vant/cell-group/index",
+    "van-switch": "/vant/switch/index",
+    "van-radio": "/vant/radio/index",
+    "van-radio-group": "/vant/radio-group/index",
+    "van-datetime-picker": "/vant/datetime-picker/index",
+    "van-icon": "/vant/icon/index",
+    "van-button": "/vant/button/index"
+  }
+}

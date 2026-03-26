@@ -1,0 +1,5 @@
+<view class="scan-container">
+  <view class="scan-section">
+    <van-button type="primary" size="large" icon="scan" bindtap="onScanCode">扫码添加药品</van-button>
+  </view>
+</view>

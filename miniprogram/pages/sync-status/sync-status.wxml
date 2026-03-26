@@ -1,0 +1,91 @@
+<view class="container">
+  <view class="header">
+    <text class="title">数据同步</text>
+  </view>
+
+  <!-- 当前家庭 -->
+  <view class="section">
+    <view class="section-title">当前家庭</view>
+    <view class="family-card" wx:if="{{currentFamily}}">
+      <view class="family-info">
+        <text class="family-name">{{currentFamily.name}}</text>
+        <text class="family-role">{{currentFamily.role === 'admin' ? '管理员' : '成员'}}</text>
+      </view>
+      <view class="family-actions">
+        <button class="btn-secondary" size="mini" bindtap="onSwitchFamily">切换</button>
+        <button class="btn-primary" size="mini" bindtap="onManageFamily">管理</button>
+      </view>
+    </view>
+    <view class="empty-tip" wx:else>
+      <text>未选择家庭</text>
+      <button class="btn-primary" size="mini" bindtap="onSwitchFamily">选择家庭</button>
+    </view>
+  </view>
+
+  <!-- 同步状态 -->
+  <view class="section">
+    <view class="section-title">同步状态</view>
+    <view class="sync-card">
+      <view class="sync-item">
+        <text class="sync-label">状态</text>
+        <text class="sync-value {{syncStatus.isSyncing ? 'syncing' : ''}}">
+          {{syncStatus.isSyncing ? '同步中...' : '已同步'}}
+        </text>
+      </view>
+      <view class="sync-item">
+        <text class="sync-label">上次同步</text>
+        <text class="sync-value">{{syncStatus.lastSyncTime}}</text>
+      </view>
+      <button class="btn-sync" bindtap="onManualSync" disabled="{{syncStatus.isSyncing}}">
+        {{syncStatus.isSyncing ? '同步中...' : '立即同步'}}
+      </button>
+    </view>
+  </view>
+
+  <!-- 数据统计 -->
+  <view class="section">
+    <view class="section-title">数据统计</view>
+    <view class="stats-grid">
+      <view class="stat-item">
+        <text class="stat-value">{{statistics.memberCount}}</text>
+        <text class="stat-label">家庭成员</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{statistics.medicineCount}}</text>
+        <text class="stat-label">药品数量</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{statistics.planCount}}</text>
+        <text class="stat-label">用药计划</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{statistics.familyMemberCount}}</text>
+        <text class="stat-label">用药对象</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 说明 -->
+  <view class="section">
+    <view class="section-title">同步说明</view>
+    <view class="tips">
+      <view class="tip-item">
+        <text class="tip-icon">•</text>
+        <text class="tip-text">数据每5分钟自动同步一次</text>
+      </view>
+      <view class="tip-item">
+        <text class="tip-icon">•</text>
+        <text class="tip-text">可手动点击"立即同步"强制同步</text>
+      </view>
+      <view class="tip-item">
+        <text class="tip-icon">•</text>
+        <text class="tip-text">同一家庭的所有成员共享数据</text>
+      </view>
+      <view class="tip-item">
+        <text class="tip-icon">•</text>
+        <text class="tip-text">管理员可以修改数据，普通成员只能查看</text>
+      </view>
+    </view>
+  </view>
+</view>
+

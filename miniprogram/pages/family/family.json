@@ -1,0 +1,18 @@
+{
+  "navigationBarTitleText": "家庭成员",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "van-button": "/vant/button/index",
+    "van-cell": "/vant/cell/index",
+    "van-cell-group": "/vant/cell-group/index",
+    "van-icon": "/vant/icon/index",
+    "van-popup": "/vant/popup/index",
+    "van-dialog": "/vant/dialog/index",
+    "van-field": "/vant/field/index",
+    "van-picker": "/vant/picker/index",
+    "van-uploader": "/vant/uploader/index",
+    "van-toast": "/vant/toast/index"
+  }
+}

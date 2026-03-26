@@ -1,0 +1,232 @@
+.calendar-container {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+/* 日历头部 */
+.calendar-header {
+  padding: 16rpx 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  background-color: #f9fafb;
+}
+
+.calendar-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+/* 年份选择器容器 */
+.year-picker-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+}
+
+/* 月份选择器容器 */
+.month-picker-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+}
+
+/* 选择器标签 */
+.picker-label {
+  font-size: 20rpx;
+  font-weight: 500;
+  color: #666666;
+}
+
+/* 选择器输入框 */
+.picker-input {
+  padding: 8rpx 16rpx;
+  border-radius: 16rpx;
+  background-color: #ffffff;
+  border: 1rpx solid #e0e0e0;
+  box-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.05);
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #2c3e50;
+  min-width: 80rpx;
+  text-align: center;
+}
+
+.calendar-icon {
+  font-size: 18rpx;
+  margin-right: 8rpx;
+}
+
+.back-to-today {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 10rpx 16rpx;
+  border-radius: 24rpx;
+  background-color: #ffffff;
+  border: 1rpx solid #e0e0e0;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.back-to-today:active {
+  background-color: #f8f9fa;
+  transform: scale(0.98);
+  box-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.1);
+}
+
+.back-to-today-text {
+  font-size: 24rpx;
+  color: #27AE60;
+  font-weight: 500;
+}
+
+/* 星期标识 */
+.calendar-weekdays {
+  display: flex;
+  flex-wrap: nowrap;
+  background-color: #f9fafb;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.weekday-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 0;
+}
+
+.weekday-text {
+  font-size: 24rpx;
+  font-weight: 500;
+  color: #666666;
+}
+
+/* 日期网格 */
+.calendar-grid {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 8rpx;
+  width: 100%;
+  min-height: 480rpx;
+  box-sizing: border-box;
+}
+
+.calendar-day {
+  width: calc(100% / 7);
+  height: 70rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2rpx 0;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+
+
+.calendar-day:active {
+  transform: scale(0.95);
+}
+
+.day-text {
+  font-size: 24rpx;
+  color: #333333;
+  font-weight: 400;
+  z-index: 1;
+}
+
+/* 当天日期高亮样式 */
+.calendar-day-today {
+  border: 2rpx solid #27AE60 !important;
+  background-color: rgba(39, 174, 96, 0.05) !important;
+  z-index: 10 !important;
+}
+
+.calendar-day-today .day-text {
+  font-weight: bold !important;
+  color: #27AE60 !important;
+}
+
+/* 选中日期高亮样式 */
+.calendar-day-selected {
+  border: 2rpx solid #3498DB !important;
+  background-color: rgba(52, 152, 219, 0.05) !important;
+  z-index: 5 !important;
+}
+
+.calendar-day-selected .day-text {
+  font-weight: bold !important;
+  color: #3498DB !important;
+}
+
+/* 确保当天日期高亮优先级高于选中日期高亮 */
+.calendar-day-today.calendar-day-selected {
+  border: 2rpx solid #27AE60 !important;
+  background-color: rgba(39, 174, 96, 0.05) !important;
+}
+
+.calendar-day-today.calendar-day-selected .day-text {
+  color: #27AE60 !important;
+}
+
+/* 日期状态样式 */
+.calendar-day-done {
+  background-color: rgba(39, 174, 96, 0.15) !important;
+}
+
+.calendar-day-done .day-text {
+  color: #27AE60 !important;
+  font-weight: 500 !important;
+}
+
+.calendar-day-pending {
+  background-color: rgba(255, 193, 7, 0.2) !important;
+}
+
+.calendar-day-pending .day-text {
+  color: #F39C12 !important;
+  font-weight: 500 !important;
+}
+
+.calendar-day-missed {
+  background-color: rgba(231, 76, 60, 0.2) !important;
+}
+
+.calendar-day-missed .day-text {
+  color: #E74C3C !important;
+  font-weight: 500 !important;
+}
+
+/* 当天日期与状态的组合样式 */
+.calendar-day-today.calendar-day-done {
+  background-color: rgba(39, 174, 96, 0.15) !important;
+  border: 2rpx solid #27AE60 !important;
+}
+
+.calendar-day-today.calendar-day-pending {
+  background-color: rgba(255, 193, 7, 0.2) !important;
+  border: 2rpx solid #F39C12 !important;
+}
+
+.calendar-day-today.calendar-day-pending .day-text {
+  color: #F39C12 !important;
+}
+
+.calendar-day-today.calendar-day-missed {
+  background-color: rgba(231, 76, 60, 0.2) !important;
+  border: 2rpx solid #E74C3C !important;
+}
+
+.calendar-day-today.calendar-day-missed .day-text {
+  color: #E74C3C !important;
+}

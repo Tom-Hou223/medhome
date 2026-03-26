@@ -1,0 +1,416 @@
+page {
+  background-color: #f5f5f5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+.container {
+  min-height: 100vh;
+  padding: 32rpx;
+}
+
+/* 老年模式基础样式 */
+.senior-mode {
+  font-size: 36rpx;
+  line-height: 1.6;
+}
+
+/* 老年模式 - 白底黑字（默认） */
+.senior-mode {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* 老年模式 - 黑底黄字主题 */
+.senior-mode.theme-yellow {
+  background-color: #000000 !important;
+  color: #FFD700 !important;
+}
+
+.senior-mode.theme-yellow .van-cell {
+  background-color: #1a1a1a !important;
+  color: #FFD700 !important;
+}
+
+.senior-mode.theme-yellow .van-cell__title {
+  color: #FFD700 !important;
+}
+
+.senior-mode.theme-yellow .van-cell__value {
+  color: #FFD700 !important;
+}
+
+.senior-mode.theme-yellow .section-title {
+  color: #FFD700 !important;
+}
+
+.senior-mode.theme-yellow .stat-card,
+.senior-mode.theme-yellow .calendar-section,
+.senior-mode.theme-yellow .plans-section,
+.senior-mode.theme-yellow .time-group,
+.senior-mode.theme-yellow .medicine-item {
+  background-color: #1a1a1a !important;
+  color: #FFD700 !important;
+}
+
+.senior-mode.theme-yellow .stat-title,
+.senior-mode.theme-yellow .stat-number,
+.senior-mode.theme-yellow .stat-label,
+.senior-mode.theme-yellow .section-title,
+.senior-mode.theme-yellow .time-text,
+.senior-mode.theme-yellow .medicine-name,
+.senior-mode.theme-yellow .medicine-dosage,
+.senior-mode.theme-yellow .member-text {
+  color: #FFD700 !important;
+}
+
+.senior-mode.theme-yellow .user-info {
+  background: #1a1a1a !important;
+}
+
+.senior-mode.theme-yellow .nickname,
+.senior-mode.theme-yellow .phone,
+.senior-mode.theme-yellow .family-name-text {
+  color: #FFD700 !important;
+}
+
+.senior-mode.theme-yellow .settings-section,
+.senior-mode.theme-yellow .menu-section {
+  background-color: #1a1a1a !important;
+}
+
+.senior-mode.theme-yellow .van-button--primary {
+  background-color: #FFD700 !important;
+  color: #000000 !important;
+  border-color: #FFD700 !important;
+}
+
+.senior-mode.theme-yellow .van-button--default {
+  background-color: #333333 !important;
+  color: #FFD700 !important;
+  border-color: #FFD700 !important;
+}
+
+.senior-mode.theme-yellow .calendar-legend {
+  background-color: #1a1a1a !important;
+}
+
+.senior-mode.theme-yellow .legend-item {
+  background-color: #2a2a2a !important;
+}
+
+.senior-mode.theme-yellow .legend-text {
+  color: #FFD700 !important;
+}
+
+.senior-mode.theme-yellow .back-to-today,
+.senior-mode.theme-yellow .calendar-month-title {
+  background-color: #2a2a2a !important;
+  border-color: #FFD700 !important;
+}
+
+.senior-mode.theme-yellow .back-to-today-text,
+.senior-mode.theme-yellow .month-text {
+  color: #FFD700 !important;
+}
+
+.senior-mode.theme-yellow .family-info {
+  background-color: #2a2a2a !important;
+}
+
+.senior-mode.theme-yellow .progress-bar {
+  background-color: #333333 !important;
+}
+
+.senior-mode.theme-yellow .progress-fill {
+  background: #FFD700 !important;
+}
+
+.senior-mode .container,
+.senior-mode .index-container,
+.senior-mode .settings-container,
+.senior-mode .plan-container {
+  padding: 48rpx;
+}
+
+/* 老年模式按钮样式 */
+.senior-mode .van-button {
+  height: 100rpx;
+  font-size: 32rpx;
+  border-radius: 16rpx;
+}
+
+/* 老年模式表单样式 */
+.senior-mode .van-field {
+  font-size: 32rpx;
+}
+
+.senior-mode .van-field__label {
+  font-size: 32rpx !important;
+  width: 180rpx !important;
+}
+
+.senior-mode .van-field__control {
+  font-size: 32rpx !important;
+}
+
+/* 老年模式单元格样式 */
+.senior-mode .van-cell {
+  font-size: 32rpx;
+  height: 120rpx;
+}
+
+/* 老年模式标签样式 */
+.senior-mode .van-tag {
+  font-size: 28rpx;
+  padding: 8rpx 16rpx;
+}
+
+/* 老年模式开关样式 */
+.senior-mode .van-switch {
+  width: 64rpx !important;
+  height: 36rpx !important;
+}
+
+/* 老年模式弹窗样式 */
+.senior-mode .dialog-title {
+  font-size: 36rpx;
+}
+
+.senior-mode .dialog-content {
+  padding: 48rpx;
+}
+
+.senior-mode .form-item {
+  padding: 40rpx 0;
+}
+
+.senior-mode .form-label {
+  font-size: 32rpx;
+  min-width: 180rpx;
+}
+
+.senior-mode .form-value-text {
+  font-size: 32rpx;
+}
+
+/* 老年模式计划卡片样式 */
+.senior-mode .plan-item {
+  padding: 40rpx;
+  margin-bottom: 32rpx;
+}
+
+.senior-mode .plan-name {
+  font-size: 36rpx;
+}
+
+.senior-mode .info-text {
+  font-size: 30rpx;
+}
+
+.senior-mode .time-text {
+  font-size: 30rpx;
+}
+
+/* 老年模式导航栏样式 */
+.senior-mode .nav-bar-title {
+  font-size: 36rpx;
+  font-weight: bold;
+}
+
+/* 老年模式统计页面样式 */
+.senior-mode .chart-container {
+  padding: 40rpx;
+}
+
+.senior-mode .chart-title {
+  font-size: 34rpx;
+  margin-bottom: 32rpx;
+}
+
+/* 老年模式家庭页面样式 */
+.senior-mode .member-item {
+  padding: 40rpx;
+  margin-bottom: 32rpx;
+}
+
+.senior-mode .member-name {
+  font-size: 34rpx;
+}
+
+.senior-mode .member-relation {
+  font-size: 30rpx;
+}
+
+/* 老年模式首页特定样式 - 使用更具体的选择器确保优先级 */
+.senior-mode.index-container {
+  font-size: 36rpx !important;
+}
+
+.senior-mode.index-container .stat-title {
+  font-size: 32rpx !important;
+  font-weight: bold !important;
+}
+
+.senior-mode.index-container .stat-number {
+  font-size: 48rpx !important;
+  font-weight: bold !important;
+}
+
+.senior-mode.index-container .stat-label {
+  font-size: 28rpx !important;
+}
+
+.senior-mode.index-container .section-title {
+  font-size: 36rpx !important;
+  font-weight: bold !important;
+}
+
+.senior-mode.index-container .section-count {
+  font-size: 28rpx !important;
+}
+
+.senior-mode.index-container .time-text {
+  font-size: 32rpx !important;
+  font-weight: bold !important;
+}
+
+.senior-mode.index-container .progress-text {
+  font-size: 28rpx !important;
+}
+
+.senior-mode.index-container .medicine-name {
+  font-size: 34rpx !important;
+  font-weight: bold !important;
+}
+
+.senior-mode.index-container .medicine-dosage {
+  font-size: 28rpx !important;
+}
+
+.senior-mode.index-container .medicine-time {
+  font-size: 26rpx !important;
+}
+
+.senior-mode.index-container .member-text {
+  font-size: 26rpx !important;
+}
+
+.senior-mode.index-container .supplement-text {
+  font-size: 26rpx !important;
+}
+
+.senior-mode.index-container .legend-text {
+  font-size: 24rpx !important;
+}
+
+.senior-mode.index-container .stat-card {
+  padding: 48rpx !important;
+  margin-bottom: 32rpx !important;
+}
+
+.senior-mode.index-container .plans-section {
+  padding: 48rpx !important;
+}
+
+.senior-mode.index-container .time-group {
+  padding: 32rpx !important;
+  margin-bottom: 32rpx !important;
+}
+
+.senior-mode.index-container .medicine-item {
+  padding: 32rpx !important;
+}
+
+.senior-mode.index-container .medicine-actions {
+  gap: 16rpx !important;
+  margin-top: 24rpx !important;
+}
+
+.senior-mode.index-container .medicine-actions .van-button {
+  height: 80rpx !important;
+  font-size: 28rpx !important;
+}
+
+.senior-mode.index-container .calendar-section {
+  padding: 32rpx !important;
+  margin-bottom: 32rpx !important;
+}
+
+.senior-mode.index-container .month-text {
+  font-size: 32rpx !important;
+  font-weight: bold !important;
+}
+
+.senior-mode.index-container .back-to-today {
+  padding: 16rpx 24rpx !important;
+}
+
+.senior-mode.index-container .back-to-today-text {
+  font-size: 28rpx !important;
+}
+
+.senior-mode.index-container .calendar-legend {
+  padding: 16rpx 0 !important;
+}
+
+.senior-mode.index-container .legend-item {
+  padding: 12rpx 20rpx !important;
+}
+
+/* 老年模式设置页面特定样式 */
+.senior-mode.settings-container {
+  font-size: 36rpx !important;
+}
+
+.senior-mode.settings-container .section-title {
+  font-size: 36rpx !important;
+  font-weight: bold !important;
+}
+
+.senior-mode.settings-container .van-cell {
+  font-size: 32rpx !important;
+  height: 120rpx !important;
+}
+
+.senior-mode.settings-container .van-button {
+  height: 100rpx !important;
+  font-size: 32rpx !important;
+}
+
+/* 老年模式计划页面特定样式 */
+.senior-mode.plan-container {
+  font-size: 36rpx !important;
+}
+
+.senior-mode.plan-container .plan-name {
+  font-size: 36rpx !important;
+}
+
+.senior-mode.plan-container .info-text {
+  font-size: 30rpx !important;
+}
+
+.senior-mode.plan-container .time-text {
+  font-size: 30rpx !important;
+}
+
+.senior-mode.plan-container .form-label {
+  font-size: 32rpx !important;
+  min-width: 180rpx !important;
+}
+
+.senior-mode.plan-container .form-value-text {
+  font-size: 32rpx !important;
+}
+
+.senior-mode.plan-container .dialog-title {
+  font-size: 36rpx !important;
+}
+
+.senior-mode.plan-container .dialog-content {
+  padding: 48rpx !important;
+}
+
+.senior-mode.plan-container .form-item {
+  padding: 40rpx 0 !important;
+}

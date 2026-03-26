@@ -1,0 +1,176 @@
+<view class="medicine-container" style="--status-bar-height: {{statusBarHeight}}px">
+  <nav-bar title="药品库" showBack="{{true}}" />
+
+  <view class="search-bar">
+    <van-search 
+      value="{{searchKeyword}}" 
+      placeholder="搜索药品名称" 
+      bind:change="onSearchInput"
+      use-action-slot
+    >
+      <view slot="action" class="search-actions">
+        <view class="scan-button" bindtap="onScanCode">
+          <van-icon name="scan" size="18px" color="#27AE60" />
+          <text class="scan-text">拍照</text>
+        </view>
+        <view class="search-button" bindtap="loadMedicines">搜索</view>
+      </view>
+    </van-search>
+  </view>
+
+  <view class="medicine-list">
+    <view class="medicine-item" wx:for="{{medicines}}" wx:key="id">
+      <view class="medicine-info" bindtap="{{isAdmin ? 'onEditMedicine' : ''}}" data-medicine="{{item}}">
+        <view class="medicine-header">
+          <van-icon name="pill" size="24px" color="#666666" />
+          <view class="medicine-details">
+            <text class="medicine-name">药品名：{{item.name}}</text>
+            <text class="medicine-dosage">用法：{{item.dosage || '无'}}</text>
+            <view class="medicine-spec-stock">
+              <text class="spec-text">规格：{{item.specification}}</text>
+              <text class="stock-text">库存：{{item.stock}}{{item.unit}}</text>
+            </view>
+          </view>
+          <van-tag type="{{item.statusColor}}" size="small">
+            {{item.statusText}}
+          </van-tag>
+        </view>
+        <view class="medicine-category">
+          <text class="category-text">{{item.category}}</text>
+        </view>
+      </view>
+      <view class="medicine-footer">
+        <text class="manufacturer-text">厂家：{{item.manufacturer || '未知厂家'}}</text>
+        <view class="medicine-actions" wx:if="{{isAdmin}}">
+          <van-icon name="edit" size="20px" color="#27AE60" catchtap="onEditMedicine" data-medicine="{{item}}" />
+          <van-icon name="delete" size="20px" color="#e74c3c" catchtap="onDeleteMedicine" data-medicine="{{item}}" />
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:if="{{medicines.length === 0 && !loading}}">
+      <van-empty description="暂无药品" />
+    </view>
+  </view>
+
+  <view class="add-button">
+    <van-button
+      type="primary"
+      size="large"
+      icon="plus"
+      bindtap="onAddMedicine"
+    >
+      添加药品
+    </van-button>
+  </view>
+
+  <van-popup 
+    show="{{showAddDialog}}" 
+    position="bottom" 
+    round="{{true}}"
+    closeable
+    bind:close="onCloseDialog"
+    custom-style="height: 80%; display: flex; flex-direction: column;"
+  >
+    <view class="dialog-header">
+      <text class="dialog-title">{{editingMedicine ? '编辑药品' : '添加药品'}}</text>
+    </view>
+    
+    <view class="dialog-content">
+      <view class="dialog-body">
+        <van-cell-group>
+          <van-field
+            label="药品名称"
+            placeholder="请输入药品名称"
+            value="{{formData.name || ''}}"
+            bind:change="onNameInput"
+            required
+          />
+
+          <van-field
+            label="生产厂家"
+            placeholder="请输入生产厂家"
+            value="{{formData.manufacturer || ''}}"
+            bind:change="onManufacturerInput"
+          />
+
+          <van-field
+            label="规格"
+            placeholder="请输入规格"
+            value="{{formData.specification || ''}}"
+            bind:change="onSpecificationInput"
+          />
+
+          <van-field
+            label="分类"
+            placeholder="请选择分类"
+            value="{{formData.category || ''}}"
+            readonly
+            is-link
+            bindtap="showCategoryPicker"
+            required
+          />
+
+          <van-field
+            label="库存"
+            type="number"
+            placeholder="请输入库存数量"
+            value="{{formData.stock || ''}}"
+            bind:change="onStockInput"
+            required
+          />
+
+          <van-field
+            label="单位"
+            placeholder="请输入单位（如：盒、瓶）"
+            value="{{formData.unit || ''}}"
+            bind:change="onUnitInput"
+            required
+          />
+
+          <van-field
+            label="过期日期"
+            placeholder="选择过期日期"
+            value="{{formData.expiryDate || ''}}"
+            readonly
+            is-link
+            bindtap="onExpiryDateSelect"
+            required
+          />
+
+          <van-field
+            label="用法用量"
+            placeholder="请输入用法用量"
+            value="{{formData.dosage || ''}}"
+            bind:change="onDosageInput"
+          />
+        </van-cell-group>
+      </view>
+    </view>
+
+    <view class="dialog-footer">
+      <van-button type="default" bindtap="onCloseDialog">取消</van-button>
+      <van-button type="primary" bindtap="onSubmit">保存</van-button>
+    </view>
+  </van-popup>
+
+  <!-- 日期选择器 -->
+  <van-popup
+    show="{{ showDatePicker }}"
+    round
+    position="bottom"
+    custom-style="height: 80%"
+  >
+    <view class="date-picker-header">
+      <text class="date-picker-cancel" bindtap="onDateCancel">取消</text>
+      <text class="date-picker-title">选择过期日期</text>
+      <text class="date-picker-confirm" bindtap="onCalendarConfirm">确认</text>
+    </view>
+    <view class="calendar-content">
+      <calendar
+        value="{{ formData.expiryDate || '' }}"
+        bind:select="onCalendarSelect"
+      />
+    </view>
+  </van-popup>
+</view>

@@ -1,0 +1,20 @@
+<view class="nav-bar" style="--status-bar-height: {{statusBarHeight}}px">
+  <view class="nav-bar-left" wx:if="{{showBack}}">
+    <view class="nav-bar-button" bindtap="onBack">
+      <van-icon name="arrow-left" size="20px" color="#333333" />
+    </view>
+  </view>
+
+  <view class="nav-bar-center" wx:if="{{title}}">
+    <view class="nav-bar-title">
+      <text>{{title}}</text>
+    </view>
+  </view>
+
+  <view class="nav-bar-right">
+    <view class="nav-bar-button" wx:for="{{rightButtons}}" wx:key="index" bindtap="onRightButtonClick" data-button="{{item}}">
+      <van-icon name="{{item.icon}}" size="20px" color="#333333" wx:if="{{item.icon}}" />
+      <text wx:else>{{item.text}}</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,117 @@
+<view class="statistics-container" style="--status-bar-height: {{statusBarHeight}}px">
+  <nav-bar title="数据统计" showBack="{{true}}" />
+
+  <view class="header">
+    <text class="subtitle">药品与用药计划数据概览</text>
+  </view>
+
+  <view class="content">
+    <van-tabs active="{{activeTab}}" bind:change="onTabChange" animated>
+      <van-tab title="药品统计" name="medicine" />
+      <van-tab title="用药计划" name="plan" />
+      <van-tab title="提醒记录" name="reminder" />
+    </van-tabs>
+
+    <view class="tab-content">
+      <!-- 药品统计 -->
+      <view wx:if="{{activeTab === 'medicine'}}">
+        <view class="stats-cards">
+          <view class="stat-card">
+            <view class="stat-header">
+              <text class="stat-title">药品总数</text>
+              <text class="stat-value">{{medicineStats.total}}</text>
+            </view>
+            <view class="stat-body">
+              <view class="stat-item">
+                <text class="stat-label">正常</text>
+                <text class="stat-number stat-normal">{{medicineStats.normal}}</text>
+              </view>
+              <view class="stat-item">
+                <text class="stat-label">临期</text>
+                <text class="stat-number stat-warning">{{medicineStats.expiring}}</text>
+              </view>
+              <view class="stat-item">
+                <text class="stat-label">过期</text>
+                <text class="stat-number stat-danger">{{medicineStats.expired}}</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="stat-card chart-card">
+            <view class="stat-header">
+              <text class="stat-title">过期趋势</text>
+              <van-button size="mini" type="default" icon="replay" bindtap="onRefresh">刷新</van-button>
+            </view>
+            <view class="chart-container">
+              <canvas canvas-id="expiryChart" class="expiry-chart"></canvas>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 用药计划 -->
+      <view wx:if="{{activeTab === 'plan'}}">
+        <view class="stats-cards">
+          <view class="stat-card">
+            <view class="stat-header">
+              <text class="stat-title">计划总数</text>
+              <text class="stat-value">{{planStats.total}}</text>
+            </view>
+            <view class="stat-body">
+              <view class="stat-item">
+                <text class="stat-label">进行中</text>
+                <text class="stat-number stat-active">{{planStats.active}}</text>
+              </view>
+              <view class="stat-item">
+                <text class="stat-label">已结束</text>
+                <text class="stat-number">{{planStats.ended}}</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="stat-card chart-card">
+            <view class="stat-header">
+              <text class="stat-title">计划趋势</text>
+            </view>
+            <view class="chart-container">
+              <canvas canvas-id="planChart" class="plan-chart"></canvas>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 提醒记录 -->
+      <view wx:if="{{activeTab === 'reminder'}}">
+        <view class="stats-cards">
+          <view class="stat-card">
+            <view class="stat-header">
+              <text class="stat-title">今日提醒</text>
+              <text class="stat-value">{{reminderStats.today}}</text>
+            </view>
+            <view class="stat-body">
+              <view class="stat-item">
+                <text class="stat-label">已完成</text>
+                <text class="stat-number stat-success">{{reminderStats.completed}}</text>
+              </view>
+              <view class="stat-item">
+                <text class="stat-label">漏服</text>
+                <text class="stat-number stat-danger">{{reminderStats.missed}}</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="stat-card">
+            <view class="stat-header">
+              <text class="stat-title">提醒总数</text>
+              <text class="stat-value">{{reminderStats.total}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="loading" wx:if="{{loading}}">
+      <van-loading size="24px" />
+    </view>
+  </view>
+</view>

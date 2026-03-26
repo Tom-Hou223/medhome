@@ -1,0 +1,14 @@
+.feedback-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 32rpx;
+  padding-top: calc(var(--status-bar-height) + 88rpx + 32rpx);
+}
+
+.form-section {
+  margin-bottom: 32rpx;
+}
+
+.actions {
+  margin-top: 40rpx;
+}

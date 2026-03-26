@@ -1,0 +1,6 @@
+@echo off
+ echo Starting server...
+ node app.js > server_output.log 2>&1
+ echo Server started, checking output...
+ type server_output.log
+ echo Server startup completed.

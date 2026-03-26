@@ -1,0 +1,5 @@
+<view class="hospital-container">
+  <view class="empty-state">
+    <van-empty description="医院信息页面" />
+  </view>
+</view>

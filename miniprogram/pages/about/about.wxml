@@ -1,0 +1,35 @@
+<view class="about-container" style="--status-bar-height: {{statusBarHeight}}px">
+  <nav-bar title="关于我们" showBack="{{true}}" />
+  <view class="about-content">
+    <view class="logo-section">
+      <image class="logo" src="/images/logo.png" mode="aspectFit" />
+      <text class="app-name">药效记</text>
+      <text class="app-version">v2.0.0</text>
+    </view>
+
+    <view class="info-section">
+      <view class="info-item">
+        <text class="info-label">应用名称</text>
+        <text class="info-value">药效记</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">版本号</text>
+        <text class="info-value">v2.0.0</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">开发团队</text>
+        <text class="info-value">药效记开发组</text>
+      </view>
+    </view>
+
+    <view class="description-section">
+      <text class="description-title">应用简介</text>
+      <text class="description-text">药效记是一款家庭常备药品智能管理与过期提醒系统，帮助您管理家庭药品，设置用药计划，智能提醒过期药品，让家庭用药更加安全便捷。</text>
+    </view>
+
+    <view class="copyright-section">
+      <text class="copyright-text">© 2026 药效记 保留所有权利</text>
+      <text class="company-info">让家庭用药更安全</text>
+    </view>
+  </view>
+</view>

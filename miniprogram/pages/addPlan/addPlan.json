@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "添加计划",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "van-button": "/vant/button/index",
+    "van-field": "/vant/field/index",
+    "van-cell": "/vant/cell/index",
+    "van-cell-group": "/vant/cell-group/index",
+    "nav-bar": "/components/nav-bar/nav-bar"
+  }
+}

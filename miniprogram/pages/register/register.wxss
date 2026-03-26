@@ -1,0 +1,273 @@
+.register-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32rpx;
+  padding-top: calc(var(--status-bar-height) + 80rpx);
+  box-sizing: border-box;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 600rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 64rpx 40rpx;
+  box-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.12);
+  transition: all 0.3s ease;
+}
+
+.login-card:hover {
+  box-shadow: 0 16rpx 48rpx rgba(0, 0, 0, 0.16);
+  transform: translateY(-6rpx);
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 8rpx;
+}
+
+.card-subtitle {
+  font-size: 20rpx;
+  color: #666666;
+}
+
+.login-form {
+  margin-bottom: 32rpx;
+}
+
+.form-group {
+  margin-bottom: 36rpx;
+  position: relative;
+}
+
+.form-group van-field {
+  border-bottom: 1rpx solid #e5e5e5;
+  height: 104rpx;
+  font-size: 30rpx;
+  transition: all 0.3s ease;
+}
+
+.form-group van-field:focus {
+  border-bottom-color: #27AE60;
+}
+
+.error-message {
+  font-size: 16rpx;
+  color: #e74c3c;
+  margin-top: 8rpx;
+  margin-left: 48rpx;
+}
+
+.form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 24rpx 0 32rpx;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+}
+
+.remember-me van-checkbox {
+  font-size: 22rpx;
+  color: #666666;
+}
+
+.forgot-password {
+  font-size: 22rpx;
+  color: #27AE60;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.forgot-password:hover {
+  color: #219a52;
+}
+
+.login-button {
+  height: 100rpx;
+  font-size: 34rpx;
+  border-radius: 50rpx;
+  background-color: #27AE60;
+  color: #ffffff;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-top: 16rpx;
+}
+
+.login-button:hover {
+  background-color: #219a52;
+}
+
+.login-button:active {
+  transform: scale(0.98);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 32rpx 0;
+  position: relative;
+}
+
+.divider::before {
+  content: '';
+  flex: 1;
+  height: 1rpx;
+  background-color: #e5e5e5;
+}
+
+.divider text {
+  padding: 0 20rpx;
+  font-size: 20rpx;
+  color: #999999;
+  background-color: #ffffff;
+}
+
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1rpx;
+  background-color: #e5e5e5;
+}
+
+.wechat-login {
+  border: 2rpx solid #27AE60;
+  background-color: #ffffff;
+  border-radius: 46rpx;
+  padding: 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+  margin-bottom: 32rpx;
+}
+
+.wechat-login:hover {
+  background-color: #f0f9f0;
+  border-color: #219a52;
+}
+
+.wechat-login:active {
+  transform: scale(0.98);
+}
+
+.wechat-login text {
+  font-size: 24rpx;
+  color: #27AE60;
+  margin-top: 12rpx;
+  font-weight: 500;
+}
+
+.register-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24rpx;
+  color: #666666;
+  margin-bottom: 16rpx;
+}
+
+.register-link .link {
+  color: #27AE60;
+  margin-left: 8rpx;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.register-link .link:hover {
+  color: #219a52;
+}
+
+.footer {
+  text-align: center;
+  padding: 0 20rpx;
+  margin-top: auto;
+  margin-bottom: 40rpx;
+}
+
+.footer text {
+  font-size: 20rpx;
+  color: #999999;
+  line-height: 32rpx;
+}
+
+.footer-links {
+  display: block;
+  margin-top: 8rpx;
+}
+
+.footer .link {
+  color: #27AE60;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer .link:hover {
+  color: #219a52;
+}
+
+/* 响应式设计 */
+@media (max-width: 375px) {
+  .login-card {
+    padding: 32rpx 24rpx;
+  }
+  
+  .brand-name {
+    font-size: 32rpx;
+  }
+  
+  .card-title {
+    font-size: 28rpx;
+  }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  .register-container {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+  }
+  
+  .login-card {
+    background: #333333;
+  }
+  
+  .brand-name, .card-title {
+    color: #ffffff;
+  }
+  
+  .brand-slogan, .card-subtitle, .form-footer text, .register-link text, .footer text {
+    color: #cccccc;
+  }
+  
+  .form-group van-field {
+    border-bottom-color: #555555;
+  }
+  
+  .divider::before, .divider::after {
+    background-color: #555555;
+  }
+  
+  .divider text {
+    background-color: #333333;
+    color: #999999;
+  }
+  
+  .wechat-login {
+    background-color: #333333;
+  }
+}

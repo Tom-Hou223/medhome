@@ -1,0 +1,13 @@
+{
+  "navigationBarTitleText": "系统设置",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "van-button": "/vant/button/index",
+    "van-cell": "/vant/cell/index",
+    "van-cell-group": "/vant/cell-group/index",
+    "van-icon": "/vant/icon/index",
+    "van-switch": "/vant/switch/index",
+    "van-picker": "/vant/picker/index"
+  }
+}

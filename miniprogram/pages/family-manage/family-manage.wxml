@@ -1,0 +1,115 @@
+<view class="container">
+  <van-nav-bar title="家庭管理" left-text="返回" left-arrow bind:click-left="onBack" />
+
+  <view class="content">
+    <!-- 家庭信息 -->
+    <view class="section">
+      <view class="family-header">
+        <text class="family-name">🏠{{family.name}}</text>
+        <van-icon name="ellipsis" size="24px" color="#666" bindtap="onEditFamilyName" wx:if="{{isAdmin}}" />
+      </view>
+    </view>
+
+    <!-- 邀请码（仅管理员可见） -->
+    <view class="section" wx:if="{{isAdmin}}">
+      <view class="section-title">邀请码</view>
+      <view class="invite-card">
+        <view wx:if="{{inviteCode}}" class="invite-content">
+          <view class="invite-code">{{inviteCode}}</view>
+          <view class="invite-tips">有效期至 {{inviteCodeExpiresAt}}</view>
+          <view class="invite-actions">
+            <van-button size="small" type="primary" bindtap="onCopyInviteCode">
+              复制邀请码
+            </van-button>
+            <van-button size="small" plain bindtap="onGenerateInviteCode">
+              重新生成
+            </van-button>
+          </view>
+        </view>
+        <view wx:else class="invite-empty">
+          <van-button type="primary" block bindtap="onGenerateInviteCode">
+            生成邀请码
+          </van-button>
+        </view>
+      </view>
+    </view>
+
+    <!-- 成员列表 -->
+    <view class="section">
+      <view class="section-title">
+        <text>成员列表</text>
+        <text class="member-count">({{members.length}}人)</text>
+      </view>
+
+      <view wx:if="{{loading}}" class="loading-container">
+        <van-loading size="24px">加载中...</van-loading>
+      </view>
+
+      <view wx:else class="member-list">
+        <view
+          class="member-item"
+          wx:for="{{members}}"
+          wx:key="userId"
+        >
+          <view class="member-avatar">
+            <image
+              wx:if="{{item.avatarUrl}}"
+              src="{{item.avatarUrl}}"
+              mode="aspectFill"
+            />
+            <view wx:else class="avatar-placeholder">
+              {{item.nickname ? item.nickname.substr(0, 1) : '?'}}
+            </view>
+          </view>
+          <view class="member-info">
+            <view class="member-top">
+              <text class="member-name">{{item.nickname || '未设置昵称'}}</text>
+              <text 
+                class="role-tag {{item.role}} {{isAdmin && family.creatorId && item.userId !== family.creatorId ? 'clickable' : ''}}" 
+                data-member="{{item}}"
+                catchtap="onMemberTap"
+              >
+                {{item.role === 'admin' ? '管理员' : '成员'}}
+              </text>
+            </view>
+            <text class="join-time">{{item.formattedJoinTime}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-section">
+      <van-button
+        type="default"
+        block
+        round
+        bindtap="onSwitchFamily"
+      >
+        切换家庭
+      </van-button>
+      <!-- 普通成员显示退出家庭 -->
+      <van-button
+        wx:if="{{!isAdmin}}"
+        type="danger"
+        block
+        round
+        bindtap="onLeaveFamily"
+        custom-style="margin-top: 16px"
+      >
+        退出家庭
+      </van-button>
+      <!-- 管理员显示删除家庭 -->
+      <van-button
+        wx:if="{{isAdmin}}"
+        type="danger"
+        block
+        round
+        bindtap="onDeleteFamily"
+        custom-style="margin-top: 16px"
+      >
+        删除家庭
+      </van-button>
+    </view>
+  </view>
+</view>

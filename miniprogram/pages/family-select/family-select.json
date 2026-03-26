@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "选择家庭",
+  "usingComponents": {
+    "van-button": "/vant/button/index",
+    "van-dialog": "/vant/dialog/index",
+    "van-field": "/vant/field/index",
+    "van-empty": "/vant/empty/index",
+    "van-loading": "/vant/loading/index",
+    "van-icon": "/vant/icon/index"
+  }
+}
