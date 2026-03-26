@@ -1,4 +1,4 @@
-# mdedhome
+# mdehome
 
 ## 项目概述
 
@@ -27,7 +27,7 @@
 ## 项目结构
 
 ```
-药效记-整合版/
+medhome/
 ├── miniprogram/              # 小程序前端
 │   ├── pages/             # 页面目录
 │   │   ├── index/         # 首页/日历
