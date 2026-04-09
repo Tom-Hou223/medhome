@@ -1,0 +1,5 @@
+<view class="medicine-detail-container">
+  <view class="empty-state">
+    <van-empty description="药品详情页面" />
+  </view>
+</view>

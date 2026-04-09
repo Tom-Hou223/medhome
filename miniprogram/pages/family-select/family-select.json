@@ -1,0 +1,11 @@
+{
+  "navigationBarTitleText": "选择家庭",
+  "usingComponents": {
+    "van-button": "/miniprogram_npm/@vant/weapp/button/index",
+    "van-dialog": "/miniprogram_npm/@vant/weapp/dialog/index",
+    "van-field": "/miniprogram_npm/@vant/weapp/field/index",
+    "van-empty": "/miniprogram_npm/@vant/weapp/empty/index",
+    "van-loading": "/miniprogram_npm/@vant/weapp/loading/index",
+    "van-icon": "/miniprogram_npm/@vant/weapp/icon/index"
+  }
+}

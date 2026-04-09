@@ -1,0 +1,19 @@
+{
+  "navigationBarTitleText": "药品库",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "van-button": "/miniprogram_npm/@vant/weapp/button/index",
+    "van-cell": "/miniprogram_npm/@vant/weapp/cell/index",
+    "van-cell-group": "/miniprogram_npm/@vant/weapp/cell-group/index",
+    "van-icon": "/miniprogram_npm/@vant/weapp/icon/index",
+    "van-popup": "/miniprogram_npm/@vant/weapp/popup/index",
+    "van-field": "/miniprogram_npm/@vant/weapp/field/index",
+    "van-picker": "/miniprogram_npm/@vant/weapp/picker/index",
+    "van-tag": "/miniprogram_npm/@vant/weapp/tag/index",
+    "van-search": "/miniprogram_npm/@vant/weapp/search/index",
+    "van-loading": "/miniprogram_npm/@vant/weapp/loading/index",
+    "calendar": "/components/calendar/calendar"
+  }
+}

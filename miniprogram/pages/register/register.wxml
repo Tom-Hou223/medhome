@@ -1,0 +1,79 @@
+<view class="register-container" style="--status-bar-height: {{statusBarHeight}}px">
+  <nav-bar title="注册" showBack="{{true}}" />
+
+  <!-- 注册卡片 -->
+  <view class="login-card">
+    <view class="card-header">
+      <text class="card-title">注册新账号</text>
+    </view>
+    
+    <!-- 注册表单 -->
+    <form class="login-form">
+      <!-- 手机号输入 -->
+      <view class="form-group">
+        <van-field
+          placeholder="请输入手机号"
+          value="{{phone || ''}}"
+          maxlength="11"
+          bind:input="onPhoneInput"
+          border="{{false}}"
+          left-icon="phone"
+        />
+        <text wx:if="{{phoneError}}" class="error-message">{{phoneError}}</text>
+      </view>
+      
+      <!-- 昵称输入 -->
+      <view class="form-group">
+        <van-field
+          placeholder="请输入昵称"
+          value="{{nickname || ''}}"
+          bind:input="onNicknameInput"
+          border="{{false}}"
+          left-icon="user"
+        />
+        <text wx:if="{{nicknameError}}" class="error-message">{{nicknameError}}</text>
+      </view>
+      
+      <!-- 密码输入 -->
+      <view class="form-group">
+        <van-field
+          placeholder="请输入密码"
+          type="password"
+          value="{{password || ''}}"
+          bind:input="onPasswordInput"
+          border="{{false}}"
+          left-icon="lock"
+        />
+        <text wx:if="{{passwordError}}" class="error-message">{{passwordError}}</text>
+      </view>
+      
+      <!-- 注册按钮 -->
+      <van-button 
+        type="primary" 
+        block 
+        loading="{{loading}}"
+        disabled="{{loading}}"
+        bind:click="onRegister"
+        class="login-button"
+      >
+        注册并登录
+      </van-button>
+    </form>
+    
+    <!-- 登录链接 -->
+    <view class="register-link">
+      <text>已有账号？</text>
+      <text class="link" bindtap="navigateToLogin">立即登录</text>
+    </view>
+    
+    <!-- 底部协议 -->
+    <view class="footer">
+      <text>注册即表示同意</text>
+      <text class="footer-links">
+        <text class="link" bindtap="showUserAgreement">《用户协议》</text>
+        <text>和</text>
+        <text class="link" bindtap="showPrivacyPolicy">《隐私政策》</text>
+      </text>
+    </view>
+  </view>
+</view>

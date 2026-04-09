@@ -1,0 +1,859 @@
+.index-container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 32rpx;
+  padding-top: calc(var(--status-bar-height) + 88rpx + 32rpx);
+  padding-bottom: 160rpx;
+}
+
+/* 老年模式容器 */
+.index-senior-container {
+  min-height: 100vh;
+  padding: 32rpx;
+  padding-top: calc(var(--status-bar-height) + 88rpx + 32rpx);
+  padding-bottom: 180rpx;
+}
+
+/* 白底黑字主题 */
+.theme-white {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.theme-white .senior-stat-card,
+.theme-white .senior-time-group,
+.theme-white .senior-medicine-card {
+  background-color: #f5f5f5;
+  color: #000000;
+}
+
+.theme-white .senior-section-title,
+.theme-white .senior-time,
+.theme-white .medicine-name {
+  color: #000000;
+}
+
+.theme-white .senior-btn-primary {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* 黑底黄字主题 */
+.theme-yellow {
+  background-color: #000000;
+  color: #FFD700;
+}
+
+.theme-yellow .senior-stat-card,
+.theme-yellow .senior-time-group,
+.theme-yellow .senior-medicine-card {
+  background-color: #1a1a1a;
+  color: #FFD700;
+  border: 2rpx solid #333333;
+}
+
+.theme-yellow .senior-section-title,
+.theme-yellow .senior-time,
+.theme-yellow .medicine-name,
+.theme-yellow .medicine-dosage,
+.theme-yellow .medicine-member,
+.theme-yellow .senior-progress,
+.theme-yellow .stat-value,
+.theme-yellow .stat-label {
+  color: #FFD700;
+}
+
+.theme-yellow .senior-btn-primary {
+  background-color: #FFD700;
+  color: #000000;
+  border: none;
+}
+
+.theme-yellow .status-text {
+  color: #FFD700;
+}
+
+/* 统计卡片 */
+.senior-stats {
+  display: flex;
+  gap: 32rpx;
+  margin-bottom: 48rpx;
+}
+
+.senior-stat-card {
+  flex: 1;
+  padding: 48rpx 32rpx;
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+  font-size: 80rpx;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.stat-value {
+  font-size: 64rpx;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 32rpx;
+  opacity: 0.8;
+}
+
+/* 用药计划 */
+.senior-plans {
+  margin-bottom: 32rpx;
+}
+
+.senior-section-title {
+  font-size: 48rpx;
+  font-weight: bold;
+  margin-bottom: 32rpx;
+  padding-left: 8rpx;
+}
+
+.senior-plan-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+
+.senior-time-group {
+  padding: 40rpx;
+  border-radius: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+}
+
+.senior-time-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32rpx;
+  padding-bottom: 24rpx;
+  border-bottom: 3rpx solid rgba(0, 0, 0, 0.1);
+}
+
+.theme-yellow .senior-time-header {
+  border-bottom-color: rgba(255, 215, 0, 0.3);
+}
+
+.senior-time {
+  font-size: 44rpx;
+  font-weight: bold;
+}
+
+.senior-progress {
+  font-size: 36rpx;
+  font-weight: bold;
+}
+
+.senior-medicine-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.senior-medicine-card {
+  padding: 40rpx;
+  border-radius: 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+}
+
+.senior-medicine-card.completed {
+  opacity: 0.6;
+}
+
+.medicine-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.medicine-name {
+  font-size: 40rpx;
+  font-weight: bold;
+}
+
+.medicine-dosage {
+  font-size: 36rpx;
+}
+
+.medicine-member {
+  font-size: 32rpx;
+  opacity: 0.8;
+}
+
+.medicine-action {
+  margin-top: 8rpx;
+}
+
+.senior-btn {
+  width: 100%;
+  height: 100rpx;
+  border-radius: 16rpx;
+  font-size: 36rpx;
+  font-weight: bold;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.senior-btn-primary {
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.2);
+}
+
+.senior-btn-primary::after {
+  border: none;
+}
+
+.medicine-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx;
+}
+
+.status-text {
+  font-size: 36rpx;
+  font-weight: bold;
+}
+
+.senior-empty {
+  padding: 120rpx 32rpx;
+  text-align: center;
+}
+
+.empty-text {
+  font-size: 36rpx;
+  opacity: 0.6;
+}
+
+.calendar-section {
+  background: #ffffff;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 6rpx 20rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.calendar-month-header {
+  margin-bottom: 16rpx;
+  padding-bottom: 12rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.calendar-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.back-to-today {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 10rpx 16rpx;
+  border-radius: 24rpx;
+  background-color: #f8f9fa;
+  border: 1rpx solid #e0e0e0;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.back-to-today:hover {
+  background-color: #e9ecef;
+  border-color: #d0d0d0;
+  box-shadow: 0 3rpx 12rpx rgba(0, 0, 0, 0.08);
+  transform: translateY(-1rpx);
+}
+
+.back-to-today:active {
+  background-color: #dee2e6;
+  transform: scale(0.98);
+  box-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.1);
+}
+
+.back-to-today-text {
+  font-size: 24rpx;
+  color: #27AE60;
+  font-weight: 500;
+}
+
+.calendar-month-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 10rpx 20rpx;
+  border-radius: 24rpx;
+  background-color: #f8f9fa;
+  border: 1rpx solid #e0e0e0;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.calendar-month-title:hover {
+  background-color: #e9ecef;
+  border-color: #d0d0d0;
+  box-shadow: 0 3rpx 12rpx rgba(0, 0, 0, 0.08);
+  transform: translateY(-1rpx);
+}
+
+.calendar-month-title:active {
+  background-color: #dee2e6;
+  transform: scale(0.98);
+  box-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.1);
+}
+
+.month-text {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #2c3e50;
+  letter-spacing: 2rpx;
+  text-shadow: 0 1rpx 3rpx rgba(0, 0, 0, 0.1);
+}
+
+.calendar-section:active {
+  transform: translateY(-2rpx);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+}
+
+
+
+.calendar-legend {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 16rpx;
+  padding: 12rpx 0;
+  background-color: #f9fafb;
+  border-radius: 12rpx;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  background-color: #ffffff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.legend-item:active {
+  transform: scale(0.98);
+  box-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.05);
+}
+
+.legend-color {
+  width: 24rpx;
+  height: 24rpx;
+  border-radius: 6rpx;
+  transition: all 0.2s ease;
+}
+
+.legend-done {
+  background-color: rgba(39, 174, 96, 0.15);
+}
+
+.legend-pending {
+  background-color: rgba(255, 193, 7, 0.2);
+}
+
+.legend-missed {
+  background-color: rgba(231, 76, 60, 0.2);
+}
+
+.legend-text {
+  font-size: 22rpx;
+  color: #666666;
+  font-weight: 500;
+}
+
+.calendar-month-picker {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 28rpx;
+  background-color: #f8f9fa;
+  transition: all 0.2s ease;
+}
+
+.calendar-month-picker:hover {
+  background-color: #e9ecef;
+}
+
+.calendar-month-picker:active {
+  background-color: #dee2e6;
+  transform: scale(0.98);
+}
+
+.calendar-month-picker-text {
+  font-size: 24rpx;
+  color: #333333;
+  font-weight: 500;
+}
+
+/* 当天日期样式 - 提高优先级 */
+.van-calendar__day.calendar-day-today {
+  position: relative !important;
+  font-weight: bold !important;
+  color: #27AE60 !important;
+  border: 2rpx solid #27AE60 !important;
+  border-radius: 12rpx !important;
+  background-color: rgba(39, 174, 96, 0.05) !important;
+  box-shadow: 0 2rpx 8rpx rgba(39, 174, 96, 0.2) !important;
+  transition: all 0.3s ease !important;
+  z-index: 10 !important;
+}
+
+.van-calendar__day.calendar-day-today:active {
+  transform: scale(0.95) !important;
+  background-color: rgba(39, 174, 96, 0.1) !important;
+}
+
+/* 当天日期与状态的组合样式 - 提高优先级 */
+.van-calendar__day.calendar-day-today.calendar-day-done {
+  background-color: rgba(39, 174, 96, 0.15) !important;
+  color: #27AE60 !important;
+  border: 2rpx solid #27AE60 !important;
+  z-index: 10 !important;
+}
+
+.van-calendar__day.calendar-day-today.calendar-day-pending {
+  background-color: rgba(255, 193, 7, 0.15) !important;
+  color: #F39C12 !important;
+  border: 2rpx solid #F39C12 !important;
+  z-index: 10 !important;
+}
+
+.van-calendar__day.calendar-day-today.calendar-day-missed {
+  background-color: rgba(231, 76, 60, 0.15) !important;
+  color: #E74C3C !important;
+  border: 2rpx solid #E74C3C !important;
+  z-index: 10 !important;
+}
+
+/* 普通状态样式 */
+.van-calendar__day.calendar-day-done {
+  background-color: rgba(39, 174, 96, 0.15);
+  color: #27AE60;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.van-calendar__day.calendar-day-done:active {
+  background-color: rgba(39, 174, 96, 0.25);
+  transform: scale(0.95);
+}
+
+.van-calendar__day.calendar-day-pending {
+  background-color: rgba(255, 193, 7, 0.15);
+  color: #F39C12;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.van-calendar__day.calendar-day-pending:active {
+  background-color: rgba(255, 193, 7, 0.25);
+  transform: scale(0.95);
+}
+
+.van-calendar__day.calendar-day-missed {
+  background-color: rgba(231, 76, 60, 0.15);
+  color: #E74C3C;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+}
+
+.van-calendar__day.calendar-day-missed:active {
+  background-color: rgba(231, 76, 60, 0.25);
+  transform: scale(0.95);
+}
+
+.stats-section {
+  margin-bottom: 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.stat-card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.stat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.stat-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+.stat-body {
+  display: flex;
+  justify-content: space-around;
+}
+
+.family-info {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.family-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #27AE60;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.stat-number {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #27AE60;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #666666;
+}
+
+.stat-warning {
+  color: #FFC107;
+}
+
+.stat-danger {
+  color: #F39C12;
+}
+
+.plans-section {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+.section-count {
+  font-size: 24rpx;
+  color: #999999;
+}
+
+.plans-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.plan-item {
+  padding: 24rpx;
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  transition: all 0.3s;
+}
+
+.plan-item:active {
+  transform: scale(0.98);
+  background: #e9ecef;
+}
+
+.plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.plan-medicine {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+.plan-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.info-text {
+  font-size: 24rpx;
+  color: #666666;
+}
+
+.empty-state {
+  margin-top: 40rpx;
+}
+
+.loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+/* 隐藏日历中的月份标题 */
+.van-calendar__month-title {
+  display: none;
+}
+
+/* 时间分组样式 */
+.time-group {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
+}
+
+.time-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.time-info {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.time-text {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+.progress-info {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.progress-text {
+  font-size: 24rpx;
+  color: #666666;
+  min-width: 60rpx;
+  text-align: right;
+}
+
+.progress-bar {
+  width: 120rpx;
+  height: 8rpx;
+  background-color: #f0f0f0;
+  border-radius: 4rpx;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #27AE60 0%, #219A52 100%);
+  border-radius: 4rpx;
+  transition: width 0.3s ease;
+}
+
+/* 药品列表样式 */
+.medicine-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.medicine-item {
+  background-color: #f9fafb;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  transition: all 0.3s;
+  border-left: 4rpx solid transparent;
+}
+
+.medicine-item:active {
+  transform: scale(0.98);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 状态样式 */
+.status-completed {
+  background-color: #e8f5e8;
+  border-left-color: #27AE60;
+}
+
+.status-skipped {
+  background-color: #f5f5f5;
+  border-left-color: #999999;
+}
+
+.status-missed {
+  background-color: #ffe8e8;
+  border-left-color: #e74c3c;
+}
+
+/* 药品信息样式 */
+.medicine-info {
+  margin-bottom: 16rpx;
+}
+
+.medicine-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16rpx;
+  margin-bottom: 12rpx;
+}
+
+.medicine-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.medicine-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+.medicine-dosage {
+  font-size: 24rpx;
+  color: #666666;
+}
+
+.medicine-time {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+.medicine-status {
+  display: flex;
+  align-items: center;
+}
+
+.medicine-member {
+  margin-top: 8rpx;
+}
+
+.member-text {
+  font-size: 22rpx;
+  color: #666666;
+}
+
+/* 操作按钮样式 */
+.medicine-actions {
+  display: flex;
+  gap: 12rpx;
+  margin-top: 16rpx;
+}
+
+.medicine-actions .van-button {
+  flex: 1;
+  height: 64rpx !important;
+  font-size: 24rpx !important;
+  border-radius: 8rpx !important;
+}
+
+.medicine-actions .van-button--primary {
+  background: linear-gradient(90deg, #27AE60 0%, #219A52 100%) !important;
+  border: none !important;
+}
+
+.medicine-actions .van-button--primary:active {
+  transform: scale(0.98) !important;
+}
+
+/* 补充记录样式 */
+.supplement-record {
+  margin-top: 16rpx;
+  padding: 16rpx;
+  background-color: rgba(39, 174, 96, 0.1);
+  border-radius: 8rpx;
+}
+
+.supplement-text {
+  font-size: 22rpx;
+  color: #27AE60;
+  line-height: 1.4;
+}
+
+/* 响应式设计 */
+@media (max-width: 375px) {
+  .time-group-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12rpx;
+  }
+  
+  .progress-info {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .progress-bar {
+    flex: 1;
+    margin-left: 12rpx;
+  }
+  
+  .medicine-actions {
+    flex-wrap: wrap;
+  }
+  
+  .medicine-actions .van-button {
+    flex: 1 1 calc(33.333% - 8rpx);
+  }
+}

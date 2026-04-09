@@ -1,0 +1,5 @@
+<view class="plan-create-container">
+  <view class="empty-state">
+    <van-empty description="创建计划页面" />
+  </view>
+</view>

@@ -1,0 +1,134 @@
+<!-- 老年模式布局 -->
+<view wx:if="{{isSeniorMode}}" class="mine-senior-container {{seniorTheme === 'yellow' ? 'theme-yellow' : 'theme-white'}}" style="--status-bar-height: {{statusBarHeight}}px">
+  <nav-bar title="我的" showBack="{{false}}" />
+
+  <!-- 用户信息 -->
+  <view class="senior-user-card" bindtap="onEditProfile">
+    <view class="user-avatar">
+      <image wx:if="{{userInfo.avatar}}" src="{{userInfo.avatar}}" mode="aspectFill" />
+      <text wx:else class="avatar-placeholder">👤</text>
+    </view>
+    <view class="user-info">
+      <text class="user-name">{{userInfo.nickname || '游客'}}</text>
+      <text class="user-phone" wx:if="{{userInfo.phone}}">{{userInfo.phone}}</text>
+    </view>
+  </view>
+
+  <!-- 家庭信息 -->
+  <view class="senior-family-card" wx:if="{{!isGuestMode && currentFamily}}" bindtap="onFamilyTap">
+    <text class="family-icon">🏠</text>
+    <text class="family-name">{{currentFamily.name}}</text>
+  </view>
+
+  <!-- 快捷菜单 -->
+  <view class="senior-menu">
+    <view class="senior-menu-item" bindtap="onMenuClick" data-url="/pages/family/family">
+      <text class="menu-icon">👨‍👩‍👧‍👦</text>
+      <text class="menu-text">家庭成员</text>
+    </view>
+    
+    <view class="senior-menu-item" bindtap="onMenuClick" data-url="/pages/statistics/statistics">
+      <text class="menu-icon">📊</text>
+      <text class="menu-text">数据统计</text>
+    </view>
+    
+    <view class="senior-menu-item" bindtap="onMenuClick" data-url="/pages/settings/settings">
+      <text class="menu-icon">⚙️</text>
+      <text class="menu-text">系统设置</text>
+    </view>
+    
+    <view class="senior-menu-item" bindtap="onMenuClick" data-url="/pages/about/about">
+      <text class="menu-icon">ℹ️</text>
+      <text class="menu-text">关于我们</text>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="senior-logout" wx:if="{{!isGuestMode}}">
+    <button class="senior-btn senior-btn-logout" bindtap="onLogout">退出登录</button>
+  </view>
+</view>
+
+<!-- 普通模式布局 -->
+<view wx:else class="mine-container" style="--status-bar-height: {{statusBarHeight}}px">
+  <nav-bar title="我的" showBack="{{false}}" />
+
+  <view class="user-info">
+    <view class="avatar-section" bindtap="onEditProfile">
+      <view class="avatar">
+        <image wx:if="{{userInfo.avatar}}" src="{{userInfo.avatar}}" mode="aspectFill" />
+        <view class="avatar-placeholder" wx:else>
+          <image src="/images/icon_pill.png" mode="aspectFit" />
+        </view>
+      </view>
+      <view class="user-details">
+        <text class="nickname">{{userInfo.nickname || '游客'}}</text>
+        <text class="guest-badge" wx:if="{{isGuestMode}}">游客模式</text>
+       
+      </view>
+    </view>
+
+    <!-- 当前家庭信息 -->
+    <view class="family-info" wx:if="{{!isGuestMode && currentFamily}}" bindtap="onFamilyTap">
+      <view class="family-content">
+        <view class="family-main">
+          <view class="family-icon">
+            <van-icon name="home-o" size="20px" color="#27ae60" />
+          </view>
+          <view class="family-texts">
+            <text class="family-name-text">{{currentFamily.name}}</text>
+          </view>
+        </view>
+        <view class="family-right">
+          <van-icon name="arrow" size="16px" color="#999" />
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="settings-section">
+    <van-cell-group>
+      <van-cell
+        title="老年模式"
+        center
+      >
+        <van-switch
+          slot="right-icon"
+          checked="{{isSeniorMode}}"
+          bind:change="onToggleSeniorMode"
+          size="20px"
+        />
+      </van-cell>
+      <van-cell
+        title="{{isGuestMode ? '游客模式' : '退出登录'}}"
+        center
+      >
+        <van-switch
+          slot="right-icon"
+          checked="{{isGuestMode}}"
+          bind:change="onToggleGuestMode"
+          size="20px"
+        />
+      </van-cell>
+    </van-cell-group>
+  </view>
+
+  <view class="menu-section">
+    <van-cell-group>
+      <van-cell
+        wx:for="{{menuList}}"
+        wx:key="title"
+        title="{{item.title}}"
+        icon="{{item.icon}}"
+        is-link
+        bindtap="onMenuClick"
+        data-url="{{item.url}}"
+        data-needlogin="{{item.needLogin}}"
+      />
+    </van-cell-group>
+  </view>
+
+  <view class="version-info">
+    <text class="version-text">药效记 v2.0.0</text>
+  </view>
+</view>

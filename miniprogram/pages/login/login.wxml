@@ -1,0 +1,106 @@
+<view class="login-container" style="--status-bar-height: {{statusBarHeight}}px">
+  <nav-bar title="登录" showBack="{{true}}" />
+
+  <!-- 登录卡片 -->
+  <view class="login-card">
+    <view class="card-header">
+      <text class="card-title">欢迎回来</text>
+      <text class="card-subtitle">请登录您的账号</text>
+    </view>
+    
+    <!-- 登录方式切换 -->
+    <view class="login-tabs">
+      <view class="tab" bindtap="switchTab" data-tab="phone" style="{{activeTab === 'phone' ? 'color: #27AE60; border-bottom: 2rpx solid #27AE60;' : ''}}">手机号登录</view>
+      <view class="tab" bindtap="switchTab" data-tab="account" style="{{activeTab === 'account' ? 'color: #27AE60; border-bottom: 2rpx solid #27AE60;' : ''}}">昵称登录</view>
+    </view>
+    
+    <!-- 登录表单 -->
+    <form class="login-form">
+      <!-- 手机号输入 -->
+      <view class="form-group" wx:if="{{activeTab === 'phone'}}">
+        <van-field
+          placeholder="请输入手机号"
+          value="{{phone || ''}}"
+          bind:input="onPhoneInput"
+          border="{{false}}"
+          left-icon="phone"
+        />
+        <text wx:if="{{phoneError}}" class="error-message">{{phoneError}}</text>
+      </view>
+      
+      <!-- 昵称输入 -->
+      <view class="form-group" wx:if="{{activeTab === 'account'}}">
+        <van-field
+          placeholder="请输入昵称"
+          value="{{nickname || ''}}"
+          bind:input="onNicknameInput"
+          border="{{false}}"
+          left-icon="user"
+        />
+        <text wx:if="{{nicknameError}}" class="error-message">{{nicknameError}}</text>
+      </view>
+      
+      <!-- 密码输入 -->
+      <view class="form-group">
+        <van-field
+          placeholder="请输入密码"
+          type="{{showPassword ? 'text' : 'password'}}"
+          value="{{password || ''}}"
+          bind:input="onPasswordInput"
+          border="{{false}}"
+          left-icon="lock"
+          right-icon="{{showPassword ? 'eye-o' : 'eye'}}"
+          bind:right-icon:click="togglePassword"
+        />
+        <text wx:if="{{passwordError}}" class="error-message">{{passwordError}}</text>
+      </view>
+      
+      <!-- 记住我和忘记密码 -->
+      <view class="form-footer">
+        <view class="remember-me">
+          <van-checkbox value="{{rememberMe}}" bind:change="onRememberChange">记住我</van-checkbox>
+        </view>
+        <text class="forgot-password" bindtap="onForgotPassword">忘记密码？</text>
+      </view>
+      
+      <!-- 登录按钮 -->
+      <van-button 
+        type="primary" 
+        block 
+        loading="{{phoneLoading}}" 
+        disabled="{{phoneLoading}}"
+        bind:click="onLogin"
+        class="login-button"
+      >
+        登录
+      </van-button>
+    </form>
+    
+    <!-- 分割线 -->
+    <view class="divider">
+      <text>其他登录方式</text>
+    </view>
+    
+    <!-- 水平排列的按钮组 -->
+    <view class="button-group">
+      <!-- 微信登录 -->
+      <button class="action-button wechat-login" bindtap="onWeChatLogin">
+        <van-icon name="wechat" size="24rpx" color="#27AE60" />
+        <text>微信登录</text>
+      </button>
+      
+      <!-- 注册按钮 -->
+      <view class="action-button register-button" bindtap="navigateToRegister">
+        <van-icon name="user-plus" size="24rpx" color="#27AE60" />
+        <text>立即注册</text>
+      </view>
+    </view>
+    
+    <!-- 游客模式 -->
+    <view class="action-button guest-button" bindtap="onGuestLogin">
+      <van-icon name="tour" size="24rpx" color="#999999" />
+      <text>游客模式</text>
+      <text class="guest-desc">无需登录，浏览示例数据</text>
+    </view>
+  </view>
+</view>

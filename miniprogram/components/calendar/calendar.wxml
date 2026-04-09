@@ -1,0 +1,47 @@
+<view class="calendar-container">
+  <!-- 日历头部 -->
+  <view class="calendar-header">
+    <!-- 年月切换区域 -->
+    <view class="calendar-header-content">
+      <!-- 年份选择器 -->
+      <view class="year-picker-container">
+        <view class="picker-label">年</view>
+        <picker mode="selector" range="{{yearList}}" value="{{yearIndex}}" bindchange="onYearChange">
+          <view class="picker-input">{{currentYear}}</view>
+        </picker>
+      </view>
+      <!-- 月份选择器 -->
+      <view class="month-picker-container">
+        <view class="picker-label">月</view>
+        <picker mode="selector" range="{{monthList}}" value="{{monthIndex}}" bindchange="onMonthChange">
+          <view class="picker-input">{{currentMonth}}</view>
+        </picker>
+      </view>
+      <view class="back-to-today" bindtap="onBackToToday">
+        <text class="calendar-icon">📅</text>
+        <text class="back-to-today-text">今日</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 星期标识 -->
+  <view class="calendar-weekdays">
+    <view class="weekday-item" wx:for="{{weekdays}}" wx:key="index">
+      <text class="weekday-text">{{item}}</text>
+    </view>
+  </view>
+
+  <!-- 日期网格 -->
+  <view class="calendar-grid">
+    <view 
+      wx:for="{{calendarDays}}"
+      wx:for-item="day"
+      wx:key="index"
+      class="calendar-day {{day.day ? (day.isToday ? 'calendar-day-today' : day.isSelected ? 'calendar-day-selected' : '') : ''}} {{day.status === 'done' ? 'calendar-day-done' : (day.status === 'pending' ? 'calendar-day-pending' : (day.status === 'missed' ? 'calendar-day-missed' : ''))}}"
+      bindtap="onDayClick"
+      data-date="{{day.dateStr}}"
+    >
+      <text class="day-text" wx:if="{{day.day}}">{{day.day}}</text>
+    </view>
+  </view>
+</view>

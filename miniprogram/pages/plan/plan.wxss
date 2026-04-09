@@ -1,0 +1,459 @@
+.plan-container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: 160rpx;
+  padding-top: calc(var(--status-bar-height) + 88rpx + 32rpx);
+}
+
+.filter-tabs {
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.plan-list {
+  padding: 32rpx;
+}
+
+.plan-item {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s;
+}
+
+.plan-item:active {
+  transform: scale(0.98);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+}
+
+/* 已结束计划样式 */
+.plan-item-ended {
+  background-color: #f9f9f9;
+  border-left: 4rpx solid #e0e0e0;
+}
+
+.plan-name-ended {
+  color: #999999;
+  text-decoration: line-through;
+}
+
+.info-text-ended {
+  color: #999999;
+}
+
+.plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.plan-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.plan-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+  flex: 1;
+}
+
+.plan-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  margin-bottom: 16rpx;
+}
+
+.info-text {
+  font-size: 24rpx;
+  color: #666666;
+}
+
+.empty-state {
+  margin-top: 80rpx;
+}
+
+.add-button {
+  position: fixed;
+  bottom: 160rpx;
+  left: 32rpx;
+  right: 32rpx;
+  z-index: 100;
+}
+
+/* 对话框样式 */
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  background-color: #f9fafb;
+  flex-shrink: 0;
+}
+
+.dialog-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.dialog-close {
+  font-size: 32rpx;
+  color: #999999;
+  cursor: pointer;
+  padding: 8rpx;
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+
+.dialog-close:active {
+  background-color: #f0f0f0;
+  transform: scale(0.9);
+}
+
+.dialog-content {
+  flex: 1;
+  padding: 32rpx;
+  padding-bottom: 32rpx;
+  overflow-y: auto;
+}
+
+.dialog-footer {
+  flex-shrink: 0;
+  padding: 32rpx;
+  padding-bottom: 160rpx;
+  background-color: #ffffff;
+  border-top: 1rpx solid #f0f0f0;
+  display: flex;
+  gap: 16rpx;
+}
+
+/* 表单样式优化 */
+.van-form {
+  width: 100%;
+}
+
+.van-field {
+  margin-bottom: 24rpx !important;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+
+.van-field__label {
+  font-size: 28rpx !important;
+  font-weight: 500 !important;
+  color: #333333 !important;
+  width: 140rpx !important;
+}
+
+/* 必填项样式 */
+.label-with-required {
+  display: flex;
+  align-items: center;
+  font-size: 28rpx !important;
+  font-weight: 500 !important;
+  color: #333333 !important;
+  width: 140rpx !important;
+}
+
+.required-mark {
+  color: #ff4d4f !important;
+  margin-left: 4rpx;
+  font-size: 28rpx !important;
+}
+
+/* 用药频率选择器样式 */
+.frequency-picker-input {
+  font-size: 28rpx !important;
+  color: #666666 !important;
+  padding: 8rpx 0;
+  min-height: 60rpx;
+  display: flex;
+  align-items: center;
+}
+
+.van-field__control {
+  font-size: 28rpx !important;
+  color: #666666 !important;
+}
+
+.van-field__control::placeholder {
+  color: #999999 !important;
+  font-size: 26rpx !important;
+}
+
+/* 按钮样式优化 */
+.dialog-footer .van-button {
+  flex: 1;
+  height: 80rpx !important;
+  width: 350rpx !important;
+  font-size: 28rpx !important;
+  font-weight: 500 !important;
+  border-radius: 12rpx !important;
+}
+
+.dialog-footer .van-button--primary {
+  background-color: #27AE60 !important;
+  border: none !important;
+}
+
+.dialog-footer .van-button--primary:active {
+  background-color: #219A52 !important;
+  transform: scale(0.98);
+}
+
+.dialog-footer .van-button {
+  flex: 1;
+  height: 80rpx !important;
+  font-size: 28rpx !important;
+  font-weight: 500 !important;
+  border-radius: 12rpx !important;
+}
+
+.dialog-footer .van-button--primary {
+  background-color: #27AE60 !important;
+  border: none !important;
+}
+
+.dialog-footer .van-button--primary:active {
+  background-color: #219A52 !important;
+  transform: scale(0.98);
+  transition: all 0.3s ease;
+}
+
+.dialog-footer .van-button--default {
+  border:2rpx solid #d0d0d0 !important;
+  color: #333333 !important;
+  background-color: #ffffff !important;
+}
+
+.dialog-footer .van-button--default:active {
+  background-color: #f8f9fa !important;
+  border-color: #b0b0b0 !important;
+  transform: scale(0.98);
+  transition: all 0.3s ease;
+}
+
+/* 选择器样式优化 */
+.van-picker {
+  width: 100%;
+}
+
+.van-picker__input {
+  font-size: 28rpx !important;
+  color: #666666 !important;
+}
+
+/* 响应式优化 */
+@media (max-width: 375px) {
+  .dialog-header {
+    padding: 24rpx;
+  }
+  
+  .dialog-content {
+    padding: 24rpx;
+  }
+  
+  .dialog-footer {
+    padding: 24rpx;
+    padding-bottom:100rpx;
+  }
+  
+  .van-field {
+    margin-bottom: 20rpx !important;
+  }
+  
+  .van-field__label {
+    font-size: 26rpx !important;
+    width: 120rpx !important;
+  }
+  
+  .van-field__control {
+    font-size: 26rpx !important;
+  }
+}
+
+/* 日期选择器样式 */
+.date-picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.date-picker-cancel {
+  font-size: 28rpx;
+  color: #999999;
+  padding: 8rpx 16rpx;
+  border-radius: 16rpx;
+  transition: all 0.3s;
+}
+
+.date-picker-cancel:active {
+  background-color: #f5f5f5;
+}
+
+.date-picker-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+}
+
+.date-picker-confirm {
+  font-size: 28rpx;
+  color: #27AE60;
+  font-weight: 500;
+  padding: 8rpx 16rpx;
+  border-radius: 16rpx;
+  transition: all 0.3s;
+}
+
+.date-picker-confirm:active {
+  background-color: rgba(39, 174, 96, 0.1);
+}
+
+/* 日历内容样式 */
+.calendar-content {
+  padding: 0;
+  height: 600rpx;
+  overflow: hidden;
+}
+
+.calendar-content .van-calendar {
+  height: 100%;
+}
+
+.calendar-content .van-calendar__header {
+  padding: 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.calendar-content .van-calendar__body {
+  height: calc(100% - 120rpx);
+}
+
+.calendar-content .van-calendar__cell {
+  height: 80rpx;
+  line-height: 80rpx;
+  font-size: 28rpx;
+}
+
+.calendar-content .van-calendar__cell--selected {
+  background-color: #27AE60 !important;
+  color: #ffffff !important;
+}
+
+.calendar-content .van-calendar__cell--start {
+  background-color: #27AE60 !important;
+  color: #ffffff !important;
+}
+
+.calendar-content .van-calendar__cell--end {
+  background-color: #27AE60 !important;
+  color: #ffffff !important;
+}
+
+.calendar-content .van-calendar__cell--range {
+  background-color: rgba(39, 174, 96, 0.1) !important;
+}
+
+/* 自定义表单项样式 */
+.form-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.form-item:active {
+  background-color: #f8f9fa;
+}
+
+.form-label {
+  font-size: 28rpx;
+  color: #333333;
+  flex: 1;
+  min-width: 140rpx;
+}
+
+.form-value {
+  flex: 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12rpx;
+}
+
+.form-value-text {
+  font-size: 28rpx;
+  color: #999999;
+  text-align: right;
+}
+
+.form-item .van-icon {
+  flex-shrink: 0;
+}
+
+.form-input {
+  font-size: 28rpx;
+  color: #666666;
+  padding: 8rpx 0;
+  min-height: 60rpx;
+  text-align: right;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-input::placeholder {
+  color: #999999;
+  font-size: 26rpx;
+}
+
+/* 已选时间列表样式 */
+.time-slots-list {
+  padding: 16rpx 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.time-slot-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 12rpx 20rpx;
+  background-color: #e8f5e9;
+  border-radius: 20rpx;
+  font-size: 26rpx;
+  color: #27AE60;
+}
+
+.time-slot-text {
+  font-weight: 500;
+}
+
+.time-slot-item .van-icon {
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.time-slot-item .van-icon:active {
+  transform: scale(1.2);
+}

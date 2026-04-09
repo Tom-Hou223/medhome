@@ -1,0 +1,197 @@
+.container {
+  padding: 20rpx;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+.header {
+  padding: 20rpx 0;
+  margin-bottom: 20rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.section {
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15rpx;
+  padding-left: 10rpx;
+}
+
+/* 家庭卡片 */
+.family-card {
+  background: white;
+  border-radius: 12rpx;
+  padding: 30rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.family-info {
+  flex: 1;
+}
+
+.family-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.family-role {
+  font-size: 24rpx;
+  color: #666;
+  background: #f0f0f0;
+  padding: 4rpx 12rpx;
+  border-radius: 4rpx;
+}
+
+.family-actions {
+  display: flex;
+  gap: 10rpx;
+}
+
+.empty-tip {
+  background: white;
+  border-radius: 12rpx;
+  padding: 40rpx;
+  text-align: center;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.empty-tip text {
+  display: block;
+  color: #999;
+  margin-bottom: 20rpx;
+}
+
+/* 同步卡片 */
+.sync-card {
+  background: white;
+  border-radius: 12rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.sync-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.sync-label {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.sync-value {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.sync-value.syncing {
+  color: #1890ff;
+}
+
+.btn-sync {
+  width: 100%;
+  margin-top: 20rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+  padding: 20rpx;
+}
+
+.btn-sync[disabled] {
+  background: #ccc;
+}
+
+/* 统计网格 */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+}
+
+.stat-item {
+  background: white;
+  border-radius: 12rpx;
+  padding: 30rpx;
+  text-align: center;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.stat-value {
+  display: block;
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #667eea;
+  margin-bottom: 10rpx;
+}
+
+.stat-label {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 提示 */
+.tips {
+  background: white;
+  border-radius: 12rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.tip-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 15rpx;
+}
+
+.tip-item:last-child {
+  margin-bottom: 0;
+}
+
+.tip-icon {
+  color: #667eea;
+  margin-right: 10rpx;
+  font-size: 28rpx;
+  line-height: 40rpx;
+}
+
+.tip-text {
+  flex: 1;
+  font-size: 26rpx;
+  color: #666;
+  line-height: 40rpx;
+}
+
+/* 按钮样式 */
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+}
+
+.btn-secondary {
+  background: white;
+  color: #667eea;
+  border: 1rpx solid #667eea;
+}
+

@@ -1,0 +1,12 @@
+{
+  "navigationBarTitleText": "帮助与反馈",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "van-button": "/miniprogram_npm/@vant/weapp/button/index",
+    "van-field": "/miniprogram_npm/@vant/weapp/field/index",
+    "van-cell": "/miniprogram_npm/@vant/weapp/cell/index",
+    "van-cell-group": "/miniprogram_npm/@vant/weapp/cell-group/index",
+    "van-picker": "/miniprogram_npm/@vant/weapp/picker/index"
+  }
+}

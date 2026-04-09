@@ -1,0 +1,16 @@
+{
+  "navigationBarTitleText": "过期预警",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "nav-bar": "/components/nav-bar/nav-bar",
+    "van-tabs": "/miniprogram_npm/@vant/weapp/tabs/index",
+    "van-tab": "/miniprogram_npm/@vant/weapp/tab/index",
+    "van-tag": "/miniprogram_npm/@vant/weapp/tag/index",
+    "van-icon": "/miniprogram_npm/@vant/weapp/icon/index",
+    "van-empty": "/miniprogram_npm/@vant/weapp/empty/index",
+    "van-popup": "/miniprogram_npm/@vant/weapp/popup/index",
+    "van-button": "/miniprogram_npm/@vant/weapp/button/index"
+  }
+}

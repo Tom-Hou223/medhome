@@ -1,0 +1,98 @@
+<view class="container" style="--status-bar-height: {{statusBarHeight}}px">
+  <nav-bar title="选择家庭" showBack="{{true}}" />
+
+  <view class="content">
+    <!-- 加载中 -->
+    <view wx:if="{{loading}}" class="loading-container">
+      <van-loading size="24px">加载中...</van-loading>
+    </view>
+
+    <!-- 家庭列表 -->
+    <view wx:elif="{{families.length > 0}}" class="family-list">
+      <view class="section-title">我的家庭</view>
+      <view
+        class="family-item"
+        wx:for="{{families}}"
+        wx:key="id"
+        data-family="{{item}}"
+        bindtap="onFamilyTap"
+      >
+        <view class="family-info">
+          <view class="family-name">🏡️{{item.name}}</view>
+
+        </view>
+        <van-icon name="arrow" color="#999" />
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view wx:else class="empty-container">
+      <van-empty description="还没有加入任何家庭" />
+      <view class="empty-tips">创建或加入一个家庭，开始管理药品</view>
+    </view>
+
+    <!-- 操作按钮 -->
+    <view class="action-buttons">
+      <van-button
+        type="primary"
+        block
+        round
+        bindtap="showCreateDialog"
+      >
+        创建家庭
+      </van-button>
+      <van-button
+        type="default"
+        block
+        round
+        bindtap="showJoinDialog"
+        custom-style="margin-top: 16px"
+      >
+        加入家庭
+      </van-button>
+    </view>
+  </view>
+
+  <!-- 创建家庭弹窗 -->
+  <van-dialog
+    use-slot
+    title="创建家庭"
+    show="{{ showCreateDialog }}"
+    show-cancel-button
+    confirm-button-text="创建"
+    bind:close="hideCreateDialog"
+    bind:confirm="onCreateFamily"
+  >
+    <view class="dialog-content">
+      <van-field
+        value="{{ familyName || '' }}"
+        placeholder="请输入家庭名称"
+        border="{{ false }}"
+        bind:input="onFamilyNameInput"
+        maxlength="20"
+      />
+    </view>
+  </van-dialog>
+
+  <!-- 加入家庭弹窗 -->
+  <van-dialog
+    use-slot
+    title="加入家庭"
+    show="{{ showJoinDialog }}"
+    show-cancel-button
+    confirm-button-text="加入"
+    bind:close="hideJoinDialog"
+    bind:confirm="onJoinFamily"
+  >
+    <view class="dialog-content">
+      <van-field
+        value="{{ inviteCode || '' }}"
+        placeholder="请输入邀请码"
+        border="{{ false }}"
+        bind:input="onInviteCodeInput"
+        maxlength="20"
+      />
+      <view class="dialog-tips">请向家庭管理员获取邀请码</view>
+    </view>
+  </van-dialog>
+</view>

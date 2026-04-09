@@ -1,0 +1,18 @@
+{
+  "navigationBarTitleText": "家庭成员",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "van-button": "/miniprogram_npm/@vant/weapp/button/index",
+    "van-cell": "/miniprogram_npm/@vant/weapp/cell/index",
+    "van-cell-group": "/miniprogram_npm/@vant/weapp/cell-group/index",
+    "van-icon": "/miniprogram_npm/@vant/weapp/icon/index",
+    "van-popup": "/miniprogram_npm/@vant/weapp/popup/index",
+    "van-dialog": "/miniprogram_npm/@vant/weapp/dialog/index",
+    "van-field": "/miniprogram_npm/@vant/weapp/field/index",
+    "van-picker": "/miniprogram_npm/@vant/weapp/picker/index",
+    "van-uploader": "/miniprogram_npm/@vant/weapp/uploader/index",
+    "van-toast": "/miniprogram_npm/@vant/weapp/toast/index"
+  }
+}

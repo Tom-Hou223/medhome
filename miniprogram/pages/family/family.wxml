@@ -1,0 +1,126 @@
+<view class="family-container" style="--status-bar-height: {{statusBarHeight}}px">
+  <nav-bar title="家庭成员" showBack="{{true}}" />
+
+
+
+  <view class="member-list">
+    <view class="member-item" wx:for="{{members}}" wx:key="id" bindtap="{{isAdmin ? 'onEditMember' : ''}}" data-member="{{item}}">
+      <view class="member-avatar">
+        <view class="avatar-container" bindtap="onAvatarUpload">
+          <view class="avatar-placeholder" wx:if="{{!item.avatar}}">
+            <van-icon name="user-circle-o" size="48px" color="#cccccc" />
+          </view>
+          <view wx:elif="{{item.avatar && item.avatar.length === 1}}" class="avatar-text">
+            {{item.avatar}}
+          </view>
+          <image wx:else class="avatar-image" src="{{item.avatar}}" mode="aspectFill" />
+        </view>
+      </view>
+
+      <view class="member-info">
+        <view class="member-name">{{item.name}}</view>
+        <view class="member-relation">{{item.relation}}</view>
+        <view class="member-phone" wx:if="{{item.phone}}">{{item.phone}}</view>
+      </view>
+
+      <view class="member-actions" wx:if="{{isAdmin}}">
+        <view class="action-btn edit-btn" catchtap="onEditMember" data-member="{{item}}">
+          <van-icon name="edit" size="20px" color="#27AE60" />
+        </view>
+        <view class="action-btn delete-btn" catchtap="onDeleteMember" data-member="{{item}}">
+          <van-icon name="delete-o" size="20px" color="#e74c3c" />
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:if="{{members.length === 0}}">
+      <van-empty description="暂无家庭成员" />
+    </view>
+  </view>
+
+  <view class="add-button" wx:if="{{isAdmin}}">
+    <van-button
+      type="primary"
+      size="large"
+      icon="plus"
+      bindtap="onAddMember"
+    >
+      添加成员
+    </van-button>
+  </view>
+
+  <van-popup 
+    show="{{showAddDialog}}" 
+    position="bottom" 
+    round="{{true}}"
+    closeable
+    bind:close="onCloseDialog"
+    custom-style="height: 60%; display: flex; flex-direction: column;"
+  >
+    <view class="dialog-header">
+      <text class="dialog-title">{{editingMember ? '编辑成员' : '添加成员'}}</text>
+    </view>
+    
+    <view class="dialog-content">
+      <view class="dialog-body">
+        <van-cell-group>
+          <van-field
+            wx:if="{{!editingMember}}"
+            label="手机号"
+            type="number"
+            placeholder="请输入对方手机号"
+            value="{{formData.phone || ''}}"
+            bind:input="onPhoneInput"
+            required
+          />
+
+          <van-field
+            wx:if="{{editingMember}}"
+            label="手机号"
+            value="{{formData.phone || ''}}"
+            readonly
+            disabled
+          />
+
+          <van-field
+            label="关系"
+            placeholder="请选择关系"
+            value="{{formData.relationship || ''}}"
+            readonly
+            is-link
+            bindtap="showRelationPicker"
+            required
+          />
+        </van-cell-group>
+
+        <view class="dialog-tips" wx:if="{{!editingMember}}">
+          <van-icon name="info-o" size="14px" color="#999" />
+          <text>添加已注册用户，对方将自动加入该家庭</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="dialog-footer">
+      <van-button type="default" bindtap="onCloseDialog">取消</van-button>
+      <van-button type="primary" bindtap="onSubmit">保存</van-button>
+    </view>
+  </van-popup>
+
+  <van-popup
+    show="{{showRelationPicker}}"
+    position="bottom"
+    round
+    custom-style="height: 50%"
+  >
+    <view class="picker-header">
+      <text class="picker-cancel" bindtap="onCloseRelationPicker">取消</text>
+      <text class="picker-title">选择关系</text>
+      <text class="picker-confirm" bindtap="onRelationConfirm">确认</text>
+    </view>
+    <view class="picker-content">
+      <view wx:for="{{relationOptions}}" wx:key="value" class="picker-item {{selectedRelation === item.value ? 'selected' : ''}}" bindtap="onRelationItemClick" data-value="{{item.value}}">
+        <text class="picker-item-text">{{item.text}}</text>
+      </view>
+    </view>
+  </van-popup>
+</view>

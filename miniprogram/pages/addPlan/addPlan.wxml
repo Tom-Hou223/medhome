@@ -1,0 +1,46 @@
+<view class="add-plan-container" style="--status-bar-height: {{statusBarHeight}}px">
+  <nav-bar title="添加计划" showBack="{{true}}" />
+
+  <view class="form-section">
+    <van-cell-group>
+      <van-field
+        label="药品名称"
+        placeholder=""
+        required
+      />
+      <van-field
+        label="成员"
+        placeholder="请选择成员"
+        required
+      />
+      <van-field
+        label="开始日期"
+        placeholder="请选择开始日期"
+        required
+      />
+      <van-field
+        label="结束日期"
+        placeholder="请选择结束日期"
+      />
+      <van-field
+        label="用药时间"
+        placeholder="请输入用药时间"
+        required
+      />
+      <van-field
+        label="频率"
+        placeholder="请选择频率"
+        required
+      />
+      <van-field
+        label="备注"
+        placeholder="请输入备注"
+        type="textarea"
+      />
+    </van-cell-group>
+  </view>
+
+  <view class="actions">
+    <van-button type="primary" block>保存</van-button>
+  </view>
+</view>

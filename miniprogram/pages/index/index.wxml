@@ -1,0 +1,218 @@
+<!-- 老年模式布局 -->
+<view wx:if="{{isSeniorMode}}" class="index-senior-container {{seniorTheme === 'yellow' ? 'theme-yellow' : 'theme-white'}}" style="--status-bar-height: {{statusBarHeight}}px">
+  <nav-bar title="首页" showBack="{{false}}" />
+
+  <!-- 简化的统计卡片 -->
+  <view class="senior-stats">
+    <view class="senior-stat-card">
+      <view class="stat-icon">📅</view>
+      <view class="stat-info">
+        <text class="stat-value">{{timeGroupedPlans.length}}</text>
+        <text class="stat-label">今日用药</text>
+      </view>
+    </view>
+    
+    <view class="senior-stat-card">
+      <view class="stat-icon">💊</view>
+      <view class="stat-info">
+        <text class="stat-value">{{medicineStats.total}}</text>
+        <text class="stat-label">药品总数</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 今日用药计划 -->
+  <view class="senior-plans">
+    <view class="senior-section-title">今日用药</view>
+    
+    <view class="senior-plan-list">
+      <view wx:for="{{timeGroupedPlans}}" wx:key="time" class="senior-time-group">
+        <view class="senior-time-header">
+          <text class="senior-time">{{item.time}}</text>
+          <text class="senior-progress">{{item.completed}}/{{item.total}}</text>
+        </view>
+        
+        <view class="senior-medicine-list">
+          <view 
+            wx:for="{{item.medicines}}" 
+            wx:key="id" 
+            wx:for-item="medicine"
+            class="senior-medicine-card {{medicine.status === 'completed' ? 'completed' : ''}}"
+          >
+            <view class="medicine-main">
+              <text class="medicine-name">{{medicine.medicineName}}</text>
+              <text class="medicine-dosage">{{medicine.dosage}}</text>
+              <text class="medicine-member">{{medicine.memberName}}</text>
+            </view>
+            
+            <view class="medicine-action" wx:if="{{medicine.status !== 'completed'}}">
+              <button 
+                class="senior-btn senior-btn-primary" 
+                catchtap="onConfirmMedicine" 
+                data-medicine="{{medicine}}"
+              >
+                确认服药
+              </button>
+            </view>
+            
+            <view class="medicine-status" wx:else>
+              <text class="status-text">✓ 已完成</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      
+      <view class="senior-empty" wx:if="{{timeGroupedPlans.length === 0 && !loading}}">
+        <text class="empty-text">今日暂无用药计划</text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 普通模式布局 -->
+<view wx:else class="index-container" style="--status-bar-height: {{statusBarHeight}}px">
+  <nav-bar title="首页" showBack="{{false}}" />
+
+  <view class="stats-section">
+    <view class="stat-card" wx:if="{{familyName}}">
+      <view class="stat-header">
+        <text class="stat-title">当前家庭</text>
+        <van-icon name="home-o" size="20px" color="#27AE60" />
+      </view>
+      <view class="stat-body">
+        <view class="family-info">
+          <text class="family-name">{{familyName}}</text>
+          <van-tag wx:if="{{isAdmin}}" type="success" size="medium">管理员</van-tag>
+          <van-tag wx:else type="default" size="medium">成员</van-tag>
+        </view>
+      </view>
+    </view>
+
+    <view class="stat-card">
+      <view class="stat-header">
+        <text class="stat-title">药品统计</text>
+        <van-icon name="medal-o" size="20px" color="#27AE60" />
+      </view>
+      <view class="stat-body">
+        <view class="stat-item">
+          <text class="stat-number">{{medicineStats.total}}</text>
+          <text class="stat-label">总数</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-number stat-warning">{{medicineStats.expiring}}</text>
+          <text class="stat-label">临期</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-number stat-danger">{{medicineStats.expired}}</text>
+          <text class="stat-label">过期</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="calendar-section">
+
+
+
+    <calendar
+      value="{{selectedDate}}"
+      dayStatusMap="{{dayStatusMap}}"
+      bind:select="onSelect"
+      bind:monthchange="onMonthChange"
+    />
+
+    <view class="calendar-legend">
+      <view class="legend-item">
+        <view class="legend-color legend-done"></view>
+        <text class="legend-text">已完成</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-color legend-pending"></view>
+        <text class="legend-text">待服药</text>
+      </view>
+      <view class="legend-item">
+        <view class="legend-color legend-missed"></view>
+        <text class="legend-text">有漏服</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="plans-section">
+    <view class="section-header">
+      <text class="section-title">今日用药计划</text>
+      <text class="section-count">{{totalMedicinesCount}}</text>
+    </view>
+
+    <view class="plans-list">
+      <!-- 按时间分组显示 -->
+      <view wx:for="{{timeGroupedPlans}}" wx:key="time" class="time-group">
+        <!-- 时间组标题和进度 -->
+        <view class="time-group-header">
+          <view class="time-info">
+            <van-icon name="clock-o" size="18px" color="#666666" />
+            <text class="time-text">{{item.time}}</text>
+          </view>
+          <view class="progress-info">
+            <text class="progress-text">{{item.completed}}/{{item.total}}</text>
+            <view class="progress-bar">
+              <view class="progress-fill" style="width: {{(item.completed / item.total) * 100}}%"></view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 药品列表 -->
+        <view class="medicine-list">
+          <view 
+            wx:for="{{item.medicines}}" 
+            wx:key="id" 
+            class="medicine-item {{item.status === 'completed' ? 'status-completed' : (item.status === 'skipped' ? 'status-skipped' : (item.status === 'missed' ? 'status-missed' : ''))}}"
+            bindtap="onMedicineClick"
+            data-medicine="{{item}}"
+          >
+            <!-- 药品基本信息 -->
+            <view class="medicine-info">
+              <view class="medicine-header">
+                <van-icon name="pill" size="24px" color="#666666" />
+                <view class="medicine-details">
+                  <text class="medicine-name">{{item.medicineName}}</text>
+                  <text class="medicine-dosage">{{item.dosage || '1片'}}</text>
+                  <text class="medicine-time">{{item.timeSlot}}</text>
+                </view>
+                <view class="medicine-status">
+                  <van-tag wx:if="{{item.status === 'completed'}}" type="success">已完成</van-tag>
+                  <van-tag wx:elif="{{item.status === 'skipped'}}" type="default">已跳过</van-tag>
+                  <van-tag wx:elif="{{item.status === 'missed'}}" type="danger">漏服</van-tag>
+                </view>
+              </view>
+              <view class="medicine-member">
+                <text class="member-text">成员：{{item.memberName}}</text>
+              </view>
+            </view>
+
+            <!-- 操作按钮 -->
+            <view class="medicine-actions" wx:if="{{item.status !== 'completed' && item.status !== 'skipped' && item.status !== 'missed'}}">
+              <van-button type="primary" size="small" catchtap="onConfirmMedicine" data-medicine="{{item}}">确认</van-button>
+              <van-button type="default" size="small" catchtap="onSkipMedicine" data-medicine="{{item}}">跳过</van-button>
+              <van-button type="default" size="small" catchtap="onLaterMedicine" data-medicine="{{item}}">稍后</van-button>
+            </view>
+
+            <!-- 补充记录 -->
+            <view class="supplement-record" wx:if="{{item.status === 'completed' && item.supplement}}">
+              <text class="supplement-text">{{item.supplement}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <view class="empty-state" wx:if="{{todayPlans.length === 0 && !loading}}">
+        <van-empty description="今日暂无用药计划" />
+      </view>
+    </view>
+  </view>
+
+
+
+  <view class="loading" wx:if="{{loading}}">
+    <van-loading size="24px" />
+  </view>
+</view>

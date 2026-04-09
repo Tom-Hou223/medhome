@@ -1,0 +1,137 @@
+<view class="expiry-warning-container" style="--status-bar-height: {{statusBarHeight}}px">
+  <nav-bar title="过期预警" showBack="{{true}}" />
+
+  <view class="filter-bar">
+    <van-tabs active="{{filterType}}" bind:change="onFilterChange" color="#27AE60">
+      <van-tab title="全部" name="all" />
+      <van-tab title="临期预警" name="warning" />
+      <van-tab title="已过期" name="expired" />
+    </van-tabs>
+  </view>
+
+  <view class="content">
+    <view wx:if="{{filterType === 'all' || filterType === 'warning'}}">
+      <view class="section-title" wx:if="{{warningList.length > 0}}">
+        <text class="title-text">临期预警（{{warningList.length}}）</text>
+        <text class="title-desc">30天内即将过期</text>
+      </view>
+
+      <view class="medicine-list">
+        <view 
+          class="medicine-item warning" 
+          wx:for="{{warningList}}" 
+          wx:key="id"
+          bindtap="onMedicineClick"
+          data-medicine="{{item}}"
+        >
+          <view class="medicine-header">
+            <text class="medicine-name">{{item.name}}</text>
+            <van-tag type="warning" size="medium">
+              {{item.daysToExpiry}}天后过期
+            </van-tag>
+          </view>
+          <view class="medicine-info">
+            <text class="info-text">规格：{{item.specification}}</text>
+            <text class="info-text">库存：{{item.stock}}{{item.unit}}</text>
+          </view>
+          <view class="medicine-footer">
+            <text class="expiry-text">过期日期：{{item.expiryDate}}</text>
+            <van-icon name="arrow" size="16px" color="#999" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{filterType === 'all' || filterType === 'expired'}}">
+      <view class="section-title" wx:if="{{expiredList.length > 0}}">
+        <text class="title-text">已过期（{{expiredList.length}}）</text>
+        <text class="title-desc">请及时处理</text>
+      </view>
+
+      <view class="medicine-list">
+        <view 
+          class="medicine-item expired" 
+          wx:for="{{expiredList}}" 
+          wx:key="id"
+          bindtap="onMedicineClick"
+          data-medicine="{{item}}"
+        >
+          <view class="medicine-header">
+            <text class="medicine-name">{{item.name}}</text>
+            <van-tag type="danger" size="medium">
+              已过期{{Math.abs(item.daysToExpiry)}}天
+            </van-tag>
+          </view>
+          <view class="medicine-info">
+            <text class="info-text">规格：{{item.specification}}</text>
+            <text class="info-text">库存：{{item.stock}}{{item.unit}}</text>
+          </view>
+          <view class="medicine-footer">
+            <text class="expiry-text">过期日期：{{item.expiryDate}}</text>
+            <van-icon name="arrow" size="16px" color="#999" />
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:if="{{warningList.length === 0 && expiredList.length === 0 && !loading}}">
+      <van-empty description="暂无预警药品" />
+    </view>
+  </view>
+
+  <van-popup 
+    show="{{showDetailDialog}}" 
+    position="bottom" 
+    round="{{true}}"
+    closeable
+    bind:close="onCloseDetailDialog"
+  >
+    <view class="detail-dialog" wx:if="{{selectedMedicine}}">
+      <view class="dialog-header">
+        <text class="dialog-title">药品详情</text>
+      </view>
+      
+      <view class="dialog-body">
+        <view class="detail-item">
+          <text class="label">药品名称</text>
+          <text class="value">{{selectedMedicine.name}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="label">生产厂家</text>
+          <text class="value">{{selectedMedicine.manufacturer}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="label">规格</text>
+          <text class="value">{{selectedMedicine.specification}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="label">分类</text>
+          <text class="value">{{selectedMedicine.category}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="label">库存</text>
+          <text class="value">{{selectedMedicine.stock}}{{selectedMedicine.unit}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="label">过期日期</text>
+          <text class="value expiry">{{selectedMedicine.expiryDate}}</text>
+        </view>
+        <view class="detail-item">
+          <text class="label">状态</text>
+          <van-tag 
+            type="{{selectedMedicine.daysToExpiry <= 0 ? 'danger' : 'warning'}}" 
+            size="medium"
+          >
+            {{selectedMedicine.daysToExpiry <= 0 ? '已过期' : '临期'}}
+          </van-tag>
+        </view>
+      </view>
+      
+      <view class="dialog-footer">
+        <van-button type="default" bindtap="onCloseDetailDialog">取消</van-button>
+        <van-button type="info" bindtap="onEditMedicine">编辑</van-button>
+        <van-button type="danger" bindtap="onDeleteMedicine">删除</van-button>
+      </view>
+    </view>
+  </van-popup>
+</view>

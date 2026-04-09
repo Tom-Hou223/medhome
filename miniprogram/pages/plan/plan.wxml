@@ -1,0 +1,210 @@
+<view class="plan-container {{isSeniorMode ? 'senior-mode' : ''}}" style="--status-bar-height: {{statusBarHeight}}px">
+  <nav-bar title="用药计划" showBack="{{true}}" />
+
+  <view class="filter-tabs">
+    <van-tabs active="{{filterType}}" bind:change="onFilterChange">
+      <van-tab title="全部" name="all" />
+      <van-tab title="进行中" name="active" />
+      <van-tab title="已结束" name="ended" />
+    </van-tabs>
+  </view>
+
+  <view class="plan-list">
+    <view class="plan-item {{item.status === 'ended' ? 'plan-item-ended' : ''}}" wx:for="{{plans}}" wx:key="id">
+      <view class="plan-header">
+        <text class="plan-name {{item.status === 'ended' ? 'plan-name-ended' : ''}}" bindtap="{{isAdmin ? 'onEditPlan' : ''}}" data-plan="{{item}}">{{item.medicineName}}</text>
+        <view class="plan-header-right">
+          <van-tag type="{{item.status === 'active' ? 'success' : 'default'}}">
+            {{item.status === 'active' ? '进行中' : '已结束'}}
+          </van-tag>
+          <van-icon wx:if="{{isAdmin}}" name="delete" size="20px" color="#e74c3c" bindtap="onDeletePlan" data-plan="{{item}}" />
+        </view>
+      </view>
+      <view class="plan-info" bindtap="{{isAdmin ? 'onEditPlan' : ''}}" data-plan="{{item}}">
+        <text class="info-text {{item.status === 'ended' ? 'info-text-ended' : ''}}">成员：{{item.memberName}}</text>
+        <text class="info-text {{item.status === 'ended' ? 'info-text-ended' : ''}}">频率：{{item.frequency === 'daily' ? '每日' : (item.frequency === 'weekly' ? '每周' : '每月')}}</text>
+        <text class="info-text {{item.status === 'ended' ? 'info-text-ended' : ''}}">服药时间：<block wx:if="{{item.timeSlots && item.timeSlots.length > 0}}"><text wx:for="{{item.timeSlots}}" wx:for-item="timeSlot" wx:key="*this">{{timeSlot}}{{index < item.timeSlots.length - 1 ? ', ' : ''}}</text></block><text wx:else>未设置</text></text>
+        <text class="info-text {{item.status === 'ended' ? 'info-text-ended' : ''}}">开始时间：{{item.startDate || '未设置'}}</text>
+        <text class="info-text {{item.status === 'ended' ? 'info-text-ended' : ''}}">结束时间：{{item.endDate || '无'}}</text>
+      </view>
+    </view>
+
+    <view class="empty-state" wx:if="{{plans.length === 0 && !loading}}">
+      <van-empty description="暂无用药计划" />
+    </view>
+  </view>
+
+  <view class="add-button">
+    <van-button
+      type="primary"
+      size="large"
+      icon="plus"
+      bindtap="onAddPlan"
+    >
+      添加计划
+    </van-button>
+  </view>
+
+  <!-- 添加/编辑计划对话框 -->
+  <van-popup 
+    show="{{showAddDialog}}" 
+    round 
+    position="bottom" 
+    custom-style="height: 80%; display: flex; flex-direction: column;"
+  >
+    <view class="dialog-header">
+      <text class="dialog-title">{{editingPlan ? '编辑用药计划' : '添加用药计划'}}</text>
+      <text class="dialog-close" bindtap="onCloseDialog">✕</text>
+    </view>
+    
+    <view class="dialog-content">
+      <van-form>
+        <!-- 药品选择 -->
+        <view class="form-item" bindtap="onMedicineSelect">
+          <view class="form-label">
+            <text>药品</text>
+            <text class="required-mark">*</text>
+          </view>
+          <view class="form-value">
+            <text class="form-value-text">{{formData.medicineName || '选择药品'}}</text>
+            <van-icon name="arrow" size="16px" color="#999" />
+          </view>
+        </view>
+        
+        <!-- 成员选择 -->
+        <view class="form-item" bindtap="onMemberSelect">
+          <view class="form-label">
+            <text>成员</text>
+            <text class="required-mark">*</text>
+          </view>
+          <view class="form-value">
+            <text class="form-value-text">{{formData.memberName || '选择成员'}}</text>
+            <van-icon name="arrow" size="16px" color="#999" />
+          </view>
+        </view>
+        
+        <!-- 开始日期 -->
+        <view class="form-item" bindtap="onStartDateSelect">
+          <view class="form-label">
+            <text>开始日期</text>
+            <text class="required-mark">*</text>
+          </view>
+          <view class="form-value">
+            <text class="form-value-text">{{formData.startDate || '选择开始日期'}}</text>
+            <van-icon name="arrow" size="16px" color="#999" />
+          </view>
+        </view>
+        
+        <!-- 结束日期 -->
+        <view class="form-item" bindtap="onEndDateSelect">
+          <view class="form-label">
+            <text>结束日期</text>
+          </view>
+          <view class="form-value">
+            <text class="form-value-text">{{formData.endDate || '选择结束日期（可选）'}}</text>
+            <van-icon name="arrow" size="16px" color="#999" />
+          </view>
+        </view>
+        
+        <!-- 用药频率 -->
+        <view class="form-item" bindtap="onFrequencyTap">
+          <view class="form-label">
+            <text>用药频率</text>
+            <text class="required-mark">*</text>
+          </view>
+          <view class="form-value">
+            <text class="form-value-text">{{frequencyOptions[frequencyIndex].label}}</text>
+            <van-icon name="arrow" size="16px" color="#999" />
+          </view>
+        </view>
+        
+        <!-- 用药时间 -->
+        <view class="form-item" bindtap="onTimeSelect">
+          <view class="form-label">
+            <text>用药时间</text>
+            <text class="required-mark">*</text>
+          </view>
+          <view class="form-value">
+            <text class="form-value-text">{{formData.timeSlots.length > 0 ? '已选择 ' + formData.timeSlots.length + ' 个时间' : '选择时间'}}</text>
+            <van-icon name="arrow" size="16px" color="#999" />
+          </view>
+        </view>
+        
+        <!-- 已选择的时间列表 -->
+        <view class="time-slots-list" wx:if="{{formData.timeSlots.length > 0}}">
+          <view class="time-slot-item" wx:for="{{formData.timeSlots}}" wx:key="index">
+            <text class="time-slot-text">{{item}}</text>
+            <van-icon name="close" size="16px" color="#999" bindtap="onRemoveTimeSlot" data-index="{{index}}" />
+          </view>
+        </view>
+        
+        <!-- 备注 -->
+        <view class="form-item">
+          <view class="form-label">
+            <text>备注</text>
+          </view>
+          <view class="form-value">
+            <input 
+              class="form-input" 
+              value="{{formData.notes}}"
+              placeholder="添加备注（可选）"
+              bindinput="onNotesChange"
+              style="min-height: 80rpx; text-align: right;" 
+            />
+          </view>
+        </view>
+      </van-form>
+    </view>
+    
+    <view class="dialog-footer">
+      <van-button 
+        type="default" 
+        size="large" 
+        bindtap="onCloseDialog"
+      >
+        取消
+      </van-button>
+      <van-button 
+        type="primary" 
+        size="large" 
+        bindtap="onSubmit"
+      >
+        保存
+      </van-button>
+    </view>
+  </van-popup>
+
+  <!-- 日期选择器 -->
+  <van-popup
+    show="{{ showDatePicker }}"
+    round
+    position="bottom"
+    custom-style="height: 80%"
+  >
+    <view class="date-picker-header">
+      <text class="date-picker-cancel" bindtap="onDateCancel">取消</text>
+      <text class="date-picker-title">选择日期</text>
+      <text class="date-picker-confirm" bindtap="onDateConfirm">确认</text>
+    </view>
+    <view class="calendar-content">
+      <calendar
+        value="{{ formData[datePickerType === 'start' ? 'startDate' : 'endDate'] }}"
+        bind:select="onCalendarSelect"
+      />
+    </view>
+  </van-popup>
+
+  <!-- 时间选择器 -->
+  <van-popup
+    show="{{ showTimePicker }}"
+    round
+    position="bottom"
+  >
+    <van-datetime-picker
+      type="time"
+      value="{{ currentTime }}"
+      bind:confirm="onTimeConfirm"
+      bind:cancel="onTimeCancel"
+    />
+  </van-popup>
+</view>

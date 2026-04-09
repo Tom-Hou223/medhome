@@ -1,0 +1,24 @@
+# 依赖
+node_modules/
+
+# 配置文件（包含敏感信息）
+config.js
+
+# 日志
+*.log
+
+# 环境变量
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# 操作系统
+.DS_Store
+Thumbs.db
+
+# 上传的文件
+uploads/avatars/*
+!uploads/avatars/.gitkeep

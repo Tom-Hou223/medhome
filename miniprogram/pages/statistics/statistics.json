@@ -1,0 +1,15 @@
+{
+  "navigationBarTitleText": "数据统计",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    "van-button": "/miniprogram_npm/@vant/weapp/button/index",
+    "van-cell": "/miniprogram_npm/@vant/weapp/cell/index",
+    "van-cell-group": "/miniprogram_npm/@vant/weapp/cell-group/index",
+    "van-icon": "/miniprogram_npm/@vant/weapp/icon/index",
+    "van-tabs": "/miniprogram_npm/@vant/weapp/tabs/index",
+    "van-tab": "/miniprogram_npm/@vant/weapp/tab/index",
+    "van-loading": "/miniprogram_npm/@vant/weapp/loading/index"
+  }
+}

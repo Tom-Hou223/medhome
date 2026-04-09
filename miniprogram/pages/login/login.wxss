@@ -1,0 +1,388 @@
+.login-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32rpx;
+  padding-top: calc(var(--status-bar-height) + 80rpx);
+  box-sizing: border-box;
+}
+
+.brand-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 64rpx;
+}
+
+.logo {
+  width: 140rpx;
+  height: 140rpx;
+  margin-bottom: 32rpx;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.brand-name {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 16rpx;
+}
+
+.brand-slogan {
+  font-size: 24rpx;
+  color: #666666;
+  text-align: center;
+  line-height: 32rpx;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 600rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  padding: 48rpx 32rpx;
+  box-shadow: 0 12rpx 40rpx rgba(0, 0, 0, 0.12);
+  transition: all 0.3s ease;
+}
+
+.login-card:hover {
+  box-shadow: 0 16rpx 48rpx rgba(0, 0, 0, 0.16);
+  transform: translateY(-6rpx);
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.card-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 8rpx;
+}
+
+.card-subtitle {
+  font-size: 20rpx;
+  color: #666666;
+}
+
+.login-tabs {
+  display: flex;
+  margin-bottom: 32rpx;
+  border-bottom: 1rpx solid #e5e5e5;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+  font-size: 24rpx;
+  color: #666666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.tab:hover {
+  color: #27AE60;
+}
+
+/* 深色模式下的 tab 样式 */
+@media (prefers-color-scheme: dark) {
+  .login-tabs {
+    border-bottom-color: #555555;
+  }
+  
+  .tab {
+    color: #cccccc;
+  }
+  
+  .tab:hover {
+    color: #27AE60;
+  }
+}
+
+.login-form {
+  margin-bottom: 32rpx;
+}
+
+.form-group {
+  margin-bottom: 28rpx;
+  position: relative;
+}
+
+.form-group van-field {
+  border-bottom: 1rpx solid #e5e5e5;
+  height: 104rpx;
+  font-size: 30rpx;
+  transition: all 0.3s ease;
+}
+
+.form-group van-field:focus {
+  border-bottom-color: #27AE60;
+}
+
+.error-message {
+  font-size: 16rpx;
+  color: #e74c3c;
+  margin-top: 8rpx;
+  margin-left: 48rpx;
+}
+
+.form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 16rpx 0 24rpx;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+}
+
+.remember-me van-checkbox {
+  font-size: 22rpx;
+  color: #666666;
+}
+
+.forgot-password {
+  font-size: 22rpx;
+  color: #27AE60;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.forgot-password:hover {
+  color: #219a52;
+}
+
+.login-button {
+  height: 100rpx;
+  font-size: 34rpx;
+  border-radius: 50rpx;
+  background-color: #27AE60;
+  color: #ffffff;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-top: 16rpx;
+}
+
+.login-button:hover {
+  background-color: #219a52;
+}
+
+.login-button:active {
+  transform: scale(0.98);
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 32rpx 0;
+  position: relative;
+}
+
+.divider::before {
+  content: '';
+  flex: 1;
+  height: 1rpx;
+  background-color: #e5e5e5;
+}
+
+.divider text {
+  padding: 0 20rpx;
+  font-size: 20rpx;
+  color: #999999;
+  background-color: #ffffff;
+}
+
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1rpx;
+  background-color: #e5e5e5;
+}
+
+.button-group {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.action-button {
+  flex: 1;
+  border-radius: 50rpx;
+  padding: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.action-button text {
+  font-size: 22rpx;
+  font-weight: 500;
+  margin-left: 10rpx;
+}
+
+.action-button:active {
+  transform: scale(0.98);
+}
+
+/* 微信登录按钮 */
+.wechat-login {
+  border: 2rpx solid #27AE60;
+  background-color: #ffffff;
+}
+
+.wechat-login text {
+  color: #27AE60;
+}
+
+.wechat-login:hover {
+  background-color: #f0f9f0;
+  border-color: #219a52;
+}
+
+/* 注册按钮 */
+.register-button {
+  border: 2rpx solid #27AE60;
+  background-color: #ffffff;
+}
+
+.register-button text {
+  color: #27AE60;
+}
+
+.register-button:hover {
+  background-color: #f0f9f0;
+  border-color: #219a52;
+}
+
+/* 游客模式按钮 */
+.guest-button {
+  border: 2rpx solid #e5e5e5;
+  background-color: #ffffff;
+  flex-direction: column;
+}
+
+.guest-button text:first-of-type {
+  color: #666666;
+  margin-left: 0;
+  margin-bottom: 8rpx;
+}
+
+.guest-desc {
+  font-size: 20rpx;
+  color: #999999;
+  margin-left: 0 !important;
+}
+
+.guest-button:hover {
+  border-color: #27AE60;
+}
+
+.guest-button:hover text:first-of-type {
+  color: #27AE60;
+}
+
+.guest-button:hover .guest-desc {
+  color: #666666;
+}
+
+.footer {
+  text-align: center;
+  padding: 0 20rpx;
+  margin-top: auto;
+  margin-bottom: 40rpx;
+}
+
+.footer text {
+  font-size: 20rpx;
+  color: #999999;
+  line-height: 32rpx;
+}
+
+.footer-links {
+  display: block;
+  margin-top: 8rpx;
+}
+
+.footer .link {
+  color: #27AE60;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer .link:hover {
+  color: #219a52;
+}
+
+/* 响应式设计 */
+@media (max-width: 375px) {
+  .login-card {
+    padding: 32rpx 24rpx;
+  }
+  
+  .brand-name {
+    font-size: 32rpx;
+  }
+  
+  .card-title {
+    font-size: 28rpx;
+  }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  .login-container {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+  }
+  
+  .login-card {
+    background: #333333;
+  }
+  
+  .brand-name, .card-title {
+    color: #ffffff;
+  }
+  
+  .brand-slogan, .card-subtitle, .form-footer text, .register-link text, .footer text {
+    color: #cccccc;
+  }
+  
+  .form-group van-field {
+    border-bottom-color: #555555;
+  }
+  
+  .divider::before, .divider::after {
+    background-color: #555555;
+  }
+  
+  .divider text {
+    background-color: #333333;
+    color: #999999;
+  }
+  
+  .wechat-login {
+    background-color: #333333;
+  }
+}

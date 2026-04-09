@@ -1,0 +1,8 @@
+{
+  "navigationBarTitleText": "用药计划",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "calendar": "../../components/calendar/calendar"
+  }
+}

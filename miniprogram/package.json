@@ -1,0 +1,20 @@
+{
+  "name": "medhome",
+  "version": "2.0.0",
+  "description": "家庭常备药品智能管理与过期提醒系统",
+  "main": "app.js",
+  "scripts": {
+    "dev": "echo '请使用微信开发者工具打开项目'"
+  },
+  "keywords": [
+    "wechat",
+    "miniprogram",
+    "medical",
+    "reminder"
+  ],
+  "author": "medhome开发组",
+  "license": "MIT",
+  "dependencies": {
+    "@vant/weapp": "^1.11.7"
+  }
+}

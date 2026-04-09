@@ -1,0 +1,16 @@
+{
+  "navigationBarTitleText": "提醒设置",
+  "navigationBarBackgroundColor": "#ffffff",
+  "navigationBarTextStyle": "black",
+  "usingComponents": {
+    "nav-bar": "/components/nav-bar/nav-bar",
+    "van-cell": "/miniprogram_npm/@vant/weapp/cell/index",
+    "van-cell-group": "/miniprogram_npm/@vant/weapp/cell-group/index",
+    "van-switch": "/miniprogram_npm/@vant/weapp/switch/index",
+    "van-radio": "/miniprogram_npm/@vant/weapp/radio/index",
+    "van-radio-group": "/miniprogram_npm/@vant/weapp/radio-group/index",
+    "van-datetime-picker": "/miniprogram_npm/@vant/weapp/datetime-picker/index",
+    "van-icon": "/miniprogram_npm/@vant/weapp/icon/index",
+    "van-button": "/miniprogram_npm/@vant/weapp/button/index"
+  }
+}
