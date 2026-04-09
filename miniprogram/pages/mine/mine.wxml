@@ -124,6 +124,7 @@
         bindtap="onMenuClick"
         data-url="{{item.url}}"
         data-needlogin="{{item.needLogin}}"
+        data-title="{{item.title}}"
       />
     </van-cell-group>
   </view>

@@ -254,6 +254,7 @@ Page({
   onMenuClick: function(e) {
     const url = e.currentTarget.dataset.url;
     const needLogin = e.currentTarget.dataset.needlogin;
+    const title = e.currentTarget.dataset.title;
 
     // 检查是否需要登录
     if (needLogin && this.data.isGuestMode) {
@@ -271,6 +272,17 @@ Page({
         }
       });
       return;
+    }
+
+    // 如果是家庭管理，先检查是否已选择家庭
+    if (title === '家庭管理') {
+      const family = DataManager.getCurrentFamily();
+      if (!family || !family.id) {
+        wx.navigateTo({
+          url: '/pages/family-select/family-select'
+        });
+        return;
+      }
     }
 
     wx.navigateTo({

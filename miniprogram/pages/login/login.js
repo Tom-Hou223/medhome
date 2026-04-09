@@ -106,11 +106,29 @@ Page({
         icon: 'success'
       });
 
-      // 无论是否有家庭，都跳转到首页
+      // 检查是否有家庭，如果没有或未选择家庭，则跳转到家庭选择页面
+      const currentFamily = DataManager.getCurrentFamily();
+      const hasFamilies = loginData.hasFamily && loginData.families && loginData.families.length > 0;
+      
       setTimeout(() => {
-        wx.switchTab({
-          url: '/pages/index/index'
-        });
+        if (!currentFamily || !currentFamily.id) {
+          if (hasFamilies) {
+            // 有家庭但未选择，跳转到家庭选择页面
+            wx.redirectTo({
+              url: '/pages/family-select/family-select'
+            });
+          } else {
+            // 没有家庭，先跳转到首页，用户可以在我的页面创建或选择家庭
+            wx.switchTab({
+              url: '/pages/index/index'
+            });
+          }
+        } else {
+          // 已选择家庭，直接跳转到首页
+          wx.switchTab({
+            url: '/pages/index/index'
+          });
+        }
       }, 1500);
 
     } catch (error) {
@@ -242,11 +260,29 @@ Page({
         icon: 'success'
       });
 
-      // 无论是否有家庭，都跳转到首页
+      // 检查是否有家庭，如果没有或未选择家庭，则跳转到家庭选择页面
+      const currentFamily = DataManager.getCurrentFamily();
+      const hasFamilies = loginData.hasFamily && loginData.families && loginData.families.length > 0;
+      
       setTimeout(() => {
-        wx.switchTab({
-          url: '/pages/index/index'
-        });
+        if (!currentFamily || !currentFamily.id) {
+          if (hasFamilies) {
+            // 有家庭但未选择，跳转到家庭选择页面
+            wx.redirectTo({
+              url: '/pages/family-select/family-select'
+            });
+          } else {
+            // 没有家庭，先跳转到首页，用户可以在我的页面创建或选择家庭
+            wx.switchTab({
+              url: '/pages/index/index'
+            });
+          }
+        } else {
+          // 已选择家庭，直接跳转到首页
+          wx.switchTab({
+            url: '/pages/index/index'
+          });
+        }
       }, 1500);
 
     }).catch(error => {

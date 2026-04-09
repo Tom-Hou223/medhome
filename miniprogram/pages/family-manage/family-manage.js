@@ -12,25 +12,36 @@ Page({
   },
 
   onLoad: function() {
-    const family = DataManager.getCurrentFamily();
-    if (!family || !family.id) {
+    try {
+      const family = DataManager.getCurrentFamily();
+      if (!family || !family.id) {
+        wx.showToast({
+          title: '请先选择家庭',
+          icon: 'none'
+        });
+        setTimeout(() => {
+          wx.navigateBack();
+        }, 1500);
+        return;
+      }
+
+      this.setData({
+        family,
+        isAdmin: family.role === 'admin'
+      });
+
+      this.loadFamilyDetail();
+      this.loadMembers();
+    } catch (error) {
+      console.error('onLoad 错误:', error);
       wx.showToast({
-        title: '请先选择家庭',
+        title: '页面加载失败',
         icon: 'none'
       });
       setTimeout(() => {
         wx.navigateBack();
       }, 1500);
-      return;
     }
-
-    this.setData({
-      family,
-      isAdmin: family.role === 'admin'
-    });
-
-    this.loadFamilyDetail();
-    this.loadMembers();
   },
 
   async loadFamilyDetail() {
@@ -53,14 +64,23 @@ Page({
   // 格式化时间为 YYYY-MM-DD HH:mm:ss
   formatDateTime(dateStr) {
     if (!dateStr) return '';
-    const date = new Date(dateStr);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    try {
+      const date = new Date(dateStr);
+      // 检查是否为有效日期
+      if (isNaN(date.getTime())) {
+        return '';
+      }
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const seconds = String(date.getSeconds()).padStart(2, '0');
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    } catch (error) {
+      console.error('格式化时间失败:', error);
+      return '';
+    }
   },
 
   async loadMembers() {
@@ -69,15 +89,30 @@ Page({
     try {
       const members = await DataManager.getFamilyMembers(this.data.family.id);
       
+      // 确保 members 是数组
+      const memberList = Array.isArray(members) ? members : [];
+      
       // 处理头像URL和格式化时间
-      const processedMembers = (members || []).map(member => {
+      const processedMembers = memberList.map(member => {
+        if (!member) return null;
+        
         if (member.avatarUrl) {
-          member.avatarUrl = DataManager.getFileUrl(member.avatarUrl);
+          try {
+            member.avatarUrl = DataManager.getFileUrl(member.avatarUrl);
+          } catch (urlError) {
+            console.error('处理头像URL失败:', urlError);
+            member.avatarUrl = '';
+          }
         }
         // 格式化加入时间
-        member.formattedJoinTime = this.formatDateTime(member.joinedAt);
+        try {
+          member.formattedJoinTime = this.formatDateTime(member.joinedAt);
+        } catch (dateError) {
+          console.error('格式化时间失败:', dateError);
+          member.formattedJoinTime = '';
+        }
         return member;
-      });
+      }).filter(Boolean); // 过滤掉 null 值
       
       this.setData({
         members: processedMembers,
@@ -85,7 +120,10 @@ Page({
       });
     } catch (error) {
       console.error('加载成员失败:', error);
-      this.setData({ loading: false });
+      this.setData({ 
+        members: [],
+        loading: false 
+      });
       wx.showToast({
         title: '加载失败',
         icon: 'none'
