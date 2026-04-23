@@ -708,9 +708,7 @@ Page({
               category: res.data.category || '其他',
               stock: 1,
               unit: '盒',
-              startDate: '',
-              endDate: '',
-              daysToExpiry: res.data.daysToExpiry || 365,
+              expiryDate: res.data.expiryDate || '',
               dosage: res.data.dosage || ''
             }
           });
