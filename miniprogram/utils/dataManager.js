@@ -1221,10 +1221,10 @@ class DataManager {
   // 更新用户信息
   static async updateProfile(userInfo) {
     try {
-      // 检查是否为游客模式
+      // 检查是否为未登录模式
       const isGuestMode = this.getCurrentMode().isGuestMode;
       
-      // 如果是游客模式，模拟更新用户信息成功
+      // 如果是未登录模式，模拟更新用户信息成功
       if (isGuestMode) {
         const mockData = {
           code: 0,
@@ -1485,10 +1485,10 @@ class DataManager {
 
   static async getMedicines() {
     try {
-      // 检查是否为游客模式
+      // 检查是否为未登录模式
       const mode = this.getCurrentMode();
       if (mode.isGuestMode) {
-        // 游客模式：从本地存储读取数据
+        // 未登录模式：从本地存储读取数据
         const savedMedicines = wx.getStorageSync('guest_medicines') || [];
         if (savedMedicines.length > 0) {
           return {
@@ -1534,10 +1534,10 @@ class DataManager {
 
   static async addMedicine(medicine) {
     try {
-      // 检查是否为游客模式
+      // 检查是否为未登录模式
       const mode = this.getCurrentMode();
       if (mode.isGuestMode) {
-        // 游客模式：保存到本地存储
+        // 未登录模式：保存到本地存储
         const savedMedicines = wx.getStorageSync('guest_medicines') || [];
         const newMedicine = {
           ...medicine,
@@ -1573,10 +1573,10 @@ class DataManager {
 
   static async updateMedicine(id, medicine) {
     try {
-      // 检查是否为游客模式
+      // 检查是否为未登录模式
       const mode = this.getCurrentMode();
       if (mode.isGuestMode) {
-        // 游客模式：更新本地存储
+        // 未登录模式：更新本地存储
         const savedMedicines = wx.getStorageSync('guest_medicines') || [];
         const index = savedMedicines.findIndex(m => m.id === id);
         if (index >= 0) {
@@ -1614,10 +1614,10 @@ class DataManager {
 
   static async deleteMedicine(id) {
     try {
-      // 检查是否为游客模式
+      // 检查是否为未登录模式
       const mode = this.getCurrentMode();
       if (mode.isGuestMode) {
-        // 游客模式：从本地存储删除
+        // 未登录模式：从本地存储删除
         const savedMedicines = wx.getStorageSync('guest_medicines') || [];
         const filteredMedicines = savedMedicines.filter(m => m.id !== id);
         wx.setStorageSync('guest_medicines', filteredMedicines);
@@ -1647,10 +1647,10 @@ class DataManager {
 
   static async getPlans() {
     try {
-      // 检查是否为游客模式
+      // 检查是否为未登录模式
       const mode = this.getCurrentMode();
       if (mode.isGuestMode) {
-        // 游客模式：从本地存储读取数据
+        // 未登录模式：从本地存储读取数据
         const savedPlans = wx.getStorageSync('guest_plans') || [];
         if (savedPlans.length > 0) {
           return {
@@ -1696,10 +1696,10 @@ class DataManager {
 
   static async addPlan(plan) {
     try {
-      // 检查是否为游客模式
+      // 检查是否为未登录模式
       const mode = this.getCurrentMode();
       if (mode.isGuestMode) {
-        // 游客模式：保存到本地存储
+        // 未登录模式：保存到本地存储
         const savedPlans = wx.getStorageSync('guest_plans') || [];
         const newPlan = {
           ...plan,
@@ -1735,10 +1735,10 @@ class DataManager {
 
   static async updatePlan(id, plan) {
     try {
-      // 检查是否为游客模式
+      // 检查是否为未登录模式
       const mode = this.getCurrentMode();
       if (mode.isGuestMode) {
-        // 游客模式：更新本地存储
+        // 未登录模式：更新本地存储
         const savedPlans = wx.getStorageSync('guest_plans') || [];
         const index = savedPlans.findIndex(p => p.id === id);
         if (index >= 0) {
@@ -1776,10 +1776,10 @@ class DataManager {
 
   static async deletePlan(id) {
     try {
-      // 检查是否为游客模式
+      // 检查是否为未登录模式
       const mode = this.getCurrentMode();
       if (mode.isGuestMode) {
-        // 游客模式：从本地存储删除
+        // 未登录模式：从本地存储删除
         const savedPlans = wx.getStorageSync('guest_plans') || [];
         const filteredPlans = savedPlans.filter(p => p.id !== id);
         wx.setStorageSync('guest_plans', filteredPlans);
@@ -1863,10 +1863,10 @@ class DataManager {
 
   static async getRecords(date) {
     try {
-      // 检查是否为游客模式
+      // 检查是否为未登录模式
       const mode = this.getCurrentMode();
       if (mode.isGuestMode) {
-        // 游客模式：从本地存储读取数据
+        // 未登录模式：从本地存储读取数据
         const savedRecords = wx.getStorageSync('guest_records') || [];
         let filteredRecords = savedRecords;
         
@@ -1937,10 +1937,10 @@ class DataManager {
   // 获取日期范围内的记录
   static async getRecordsByRange(startDate, endDate) {
     try {
-      // 检查是否为游客模式
+      // 检查是否为未登录模式
       const mode = this.getCurrentMode();
       if (mode.isGuestMode) {
-        // 游客模式：使用模拟数据
+        // 未登录模式：使用模拟数据
         const mockData = this.getMockData('/records');
         const mockRecords = mockData ? mockData.data : [];
         
@@ -2002,10 +2002,10 @@ class DataManager {
 
   static async completeRecord(id) {
     try {
-      // 检查是否为游客模式
+      // 检查是否为未登录模式
       const mode = this.getCurrentMode();
       if (mode.isGuestMode) {
-        // 游客模式：更新本地存储
+        // 未登录模式：更新本地存储
         const savedRecords = wx.getStorageSync('guest_records') || [];
         const index = savedRecords.findIndex(r => r.id === id);
         if (index >= 0) {
@@ -2039,10 +2039,10 @@ class DataManager {
 
   static async missRecord(id) {
     try {
-      // 检查是否为游客模式
+      // 检查是否为未登录模式
       const mode = this.getCurrentMode();
       if (mode.isGuestMode) {
-        // 游客模式：更新本地存储
+        // 未登录模式：更新本地存储
         const savedRecords = wx.getStorageSync('guest_records') || [];
         const index = savedRecords.findIndex(r => r.id === id);
         if (index >= 0) {
@@ -2076,10 +2076,10 @@ class DataManager {
 
   static async addRecord(record) {
     try {
-      // 检查是否为游客模式
+      // 检查是否为未登录模式
       const mode = this.getCurrentMode();
       if (mode.isGuestMode) {
-        // 游客模式：保存到本地存储
+        // 未登录模式：保存到本地存储
         const savedRecords = wx.getStorageSync('guest_records') || [];
         const newRecord = {
           ...record,
@@ -2334,7 +2334,7 @@ class DataManager {
     FamilyManager.setCurrentFamily(family);
   }
 
-  // 清除所有游客数据
+  // 清除所有未登录数据
   static clearGuestData() {
     wx.removeStorageSync('guest_medicines');
     wx.removeStorageSync('guest_plans');

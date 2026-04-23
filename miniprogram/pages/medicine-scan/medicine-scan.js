@@ -17,11 +17,14 @@ Page({
 
   onScanCode: function() {
     wx.scanCode({
+      scanType: ['barCode', 'qrCode'],
       success: (res) => {
+        console.log('扫码结果:', res);
         this.setData({ scanResult: res });
         this.processScanResult(res);
       },
       fail: (err) => {
+        console.error('扫码失败:', err);
         wx.showToast({
           title: '扫码失败，请重试',
           icon: 'none'
@@ -33,64 +36,47 @@ Page({
   processScanResult: function(res) {
     this.setData({ loading: true });
     
-    // 模拟扫码后获取药品信息
-    setTimeout(() => {
-      const medicineInfo = this.matchMedicineByBarcode(res.result);
-      this.setData({ 
-        medicineInfo: medicineInfo,
-        loading: false 
-      });
+    // 调用真实的API进行条形码识别
+    DataManager.recognizeBarcode(res.result).then(response => {
+      this.setData({ loading: false });
       
-      if (medicineInfo) {
+      if (response.code === 0 && response.data) {
+        this.setData({ medicineInfo: response.data });
         wx.showToast({
           title: '扫码成功，已识别药品',
           icon: 'success'
         });
-        this.navigateToAddMedicine(medicineInfo);
+        this.navigateToAddMedicine(response.data, res.result);
       } else {
-        wx.showToast({
-          title: '未识别到药品信息',
-          icon: 'none'
-        });
+        this.showRecognitionFailed(res.result);
       }
-    }, 1000);
+    }).catch(error => {
+      console.error('条形码识别失败:', error);
+      this.setData({ loading: false });
+      this.showRecognitionFailed(res.result);
+    });
   },
 
-  matchMedicineByBarcode: function(barcode) {
-    // 模拟根据条形码匹配药品信息
-    const mockMedicines = {
-      '6901021111111': {
-        name: '阿莫西林胶囊',
-        manufacturer: '哈药集团',
-        specification: '0.25g×24粒',
-        category: '抗生素',
-        dosage: '口服，一次1粒，一日3次',
-        daysToExpiry: 365
-      },
-      '6901021111112': {
-        name: '布洛芬缓释胶囊',
-        manufacturer: '芬必得',
-        specification: '0.3g×24粒',
-        category: '解热镇痛',
-        dosage: '口服，一次1粒，一日2次',
-        daysToExpiry: 365
-      },
-      '6901021111113': {
-        name: '感冒灵颗粒',
-        manufacturer: '999感冒灵',
-        specification: '9g×10袋',
-        category: '感冒用药',
-        dosage: '开水冲服，一次1袋，一日3次',
-        daysToExpiry: 730
+  showRecognitionFailed: function(barcode) {
+    wx.showModal({
+      title: '提示',
+      content: '识别库中暂无该药品，请手动输入',
+      confirmText: '手动输入',
+      cancelText: '重新扫描',
+      success: (modalRes) => {
+        if (modalRes.confirm) {
+          // 打开表单，只填充条形码
+          this.navigateToAddMedicine({ barcode: barcode }, barcode);
+        } else {
+          this.onScanCode();
+        }
       }
-    };
-    
-    return mockMedicines[barcode] || null;
+    });
   },
 
-  navigateToAddMedicine: function(medicineInfo) {
+  navigateToAddMedicine: function(medicineInfo, barcode = '') {
     wx.navigateTo({
-      url: `/pages/medicine/medicine?scan=true&name=${encodeURIComponent(medicineInfo.name)}&manufacturer=${encodeURIComponent(medicineInfo.manufacturer)}&specification=${encodeURIComponent(medicineInfo.specification)}&category=${encodeURIComponent(medicineInfo.category)}&dosage=${encodeURIComponent(medicineInfo.dosage)}&daysToExpiry=${medicineInfo.daysToExpiry}`
+      url: `/pages/medicine/medicine?scan=true&name=${encodeURIComponent(medicineInfo.name || '')}&manufacturer=${encodeURIComponent(medicineInfo.manufacturer || '')}&specification=${encodeURIComponent(medicineInfo.specification || '')}&category=${encodeURIComponent(medicineInfo.category || '其他')}&dosage=${encodeURIComponent(medicineInfo.dosage || '')}&barcode=${encodeURIComponent(barcode)}`
     });
   },
 

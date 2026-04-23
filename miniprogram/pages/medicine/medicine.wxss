@@ -2,7 +2,7 @@
   min-height: 100vh;
   background: #f5f5f5;
   padding-bottom: 160rpx;
-  padding-top: calc(var(--status-bar-height) + 88rpx + 32rpx);
+  padding-top: calc(var(--status-bar-height) + 88rpx );
 }
 
 .search-bar {
@@ -16,10 +16,10 @@
 
 .medicine-item {
   background: #ffffff;
-  border-radius: 16rpx;
+  border-radius: 50rpx;
   padding: 32rpx;
   margin-bottom: 24rpx;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.16);
   transition: all 0.3s;
 }
 
@@ -157,7 +157,10 @@
   left: 32rpx;
   right: 32rpx;
   z-index: 100;
+  bottom: calc(110rpx + env(safe-area-inset-bottom));
+  
 }
+
 
 .dialog-content {
   flex: 1;

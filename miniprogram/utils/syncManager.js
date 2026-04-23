@@ -61,7 +61,7 @@ class SyncManager {
     const DataManager = require('./dataManager.js');
     const mode = DataManager.getCurrentMode();
     
-    // 游客模式不同步
+    // 未登录模式不同步
     if (mode.isGuestMode) {
       return;
     }
@@ -117,7 +117,7 @@ class SyncManager {
     const mode = DataManager.getCurrentMode();
     
     if (mode.isGuestMode) {
-      return Promise.reject(new Error('游客模式不支持同步'));
+      return Promise.reject(new Error('未登录模式不支持同步'));
     }
 
     const familyId = DataManager.getCurrentFamilyId();

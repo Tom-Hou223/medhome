@@ -297,11 +297,11 @@ Page({
     });
   },
 
-  // 游客模式登录（可选）
+  // 未登录模式登录（可选）
   onGuestLogin: function() {
     wx.showModal({
       title: '提示',
-      content: '游客模式下数据仅保存在本地，无法与家人共享。建议使用微信登录。',
+      content: '未登录模式下数据仅保存在本地，无法与家人共享。建议使用微信登录。',
       confirmText: '继续',
       cancelText: '取消',
       success: (res) => {
@@ -341,7 +341,7 @@ Page({
   showUserAgreement: function() {
     wx.showModal({
       title: '用户协议',
-      content: '欢迎使用药效记！本协议是您与药效记之间的法律协议。请您务必审慎阅读、充分理解本协议各条款内容...',
+      content: '欢迎使用medhome！本协议是您与medhome之间的法律协议。请您务必审慎阅读、充分理解本协议各条款内容...',
       showCancel: true,
       confirmText: '同意',
       cancelText: '取消'
@@ -352,7 +352,7 @@ Page({
   showPrivacyPolicy: function() {
     wx.showModal({
       title: '隐私政策',
-      content: '药效记致力于保护您的隐私。本政策描述了我们如何收集、使用、存储和保护您的个人信息...',
+      content: 'medhome致力于保护您的隐私。本政策描述了我们如何收集、使用、存储和保护您的个人信息...',
       showCancel: true,
       confirmText: '同意',
       cancelText: '取消'

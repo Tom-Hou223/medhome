@@ -9,7 +9,7 @@
       <text wx:else class="avatar-placeholder">👤</text>
     </view>
     <view class="user-info">
-      <text class="user-name">{{userInfo.nickname || '游客'}}</text>
+      <text class="user-name">{{userInfo.nickname || '未登录'}}</text>
       <text class="user-phone" wx:if="{{userInfo.phone}}">{{userInfo.phone}}</text>
     </view>
   </view>
@@ -58,35 +58,32 @@
       <view class="avatar">
         <image wx:if="{{userInfo.avatar}}" src="{{userInfo.avatar}}" mode="aspectFill" />
         <view class="avatar-placeholder" wx:else>
-          <image src="/images/icon_pill.png" mode="aspectFit" />
+          <image src="/images/none.PNG" mode="aspectFit" />
         </view>
       </view>
       <view class="user-details">
-        <text class="nickname">{{userInfo.nickname || '游客'}}</text>
-        <text class="guest-badge" wx:if="{{isGuestMode}}">游客模式</text>
-       
-      </view>
-    </view>
+        <text class="nickname">{{userInfo.nickname || '未登录'}}</text>
 
-    <!-- 当前家庭信息 -->
-    <view class="family-info" wx:if="{{!isGuestMode && currentFamily}}" bindtap="onFamilyTap">
-      <view class="family-content">
-        <view class="family-main">
-          <view class="family-icon">
-            <van-icon name="home-o" size="20px" color="#27ae60" />
-          </view>
-          <view class="family-texts">
+       <!-- 当前家庭信息 -->
+      <view class="family-info-ios" wx:if="{{!isGuestMode && currentFamily}}" bindtap="onFamilyTap">
             <text class="family-name-text">{{currentFamily.name}}</text>
-          </view>
-        </view>
-        <view class="family-right">
-          <van-icon name="arrow" size="16px" color="#999" />
-        </view>
+      </view>      
+        <text class="guest-badge" wx:if="{{isGuestMode}}">未登录状态</text>  
+
       </view>
+
+      <view class="arrow-right">
+        <van-icon name="arrow" color="#ccc" size="16px" />
+      </view>
+
     </view>
   </view>
 
-  <view class="settings-section">
+
+
+
+
+ <!--<view class="settings-section">
     <van-cell-group>
       <van-cell
         title="老年模式"
@@ -100,7 +97,7 @@
         />
       </van-cell>
       <van-cell
-        title="{{isGuestMode ? '游客模式' : '退出登录'}}"
+        title="{{isGuestMode ? '未登录模式' : '退出登录'}}"
         center
       >
         <van-switch
@@ -112,6 +109,7 @@
       </van-cell>
     </van-cell-group>
   </view>
+--> 
 
   <view class="menu-section">
     <van-cell-group>
@@ -129,7 +127,20 @@
     </van-cell-group>
   </view>
 
-  <view class="version-info">
-    <text class="version-text">药效记 v2.0.0</text>
+  <view class="login-logout-section">
+    <van-button
+      type="primary"
+      size="large"
+      bind:click="onToggleGuestMode"
+      custom-style="background-color: #27ae60; border-color: #27ae60; width: 100%; height: 80rpx; font-size: 32rpx; border-radius: 50rpx;"
+    >
+      {{isGuestMode ? '登录' : '退出'}}
+    </van-button>
   </view>
+
+  <view class="version-info">
+    <text class="version-text">medhome v2.0.0</text>
+  </view>
+
+  
 </view>

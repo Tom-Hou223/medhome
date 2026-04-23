@@ -509,16 +509,16 @@ Page({
   },
 
   /**
-   * 拍照
+   * 拍照 - 支持多张照片
    */
   takePhoto: function() {
     wx.chooseImage({
-      count: 1,
+      count: 9, // 最多支持9张照片
       sizeType: ['original', 'compressed'],
       sourceType: ['camera'],
       success: (res) => {
-        // 调用识别API
-        this.recognizeImage(res.tempFilePaths[0]);
+        // 调用识别API，处理多张照片
+        this.recognizeMultiImage(res.tempFilePaths);
       },
       fail: (error) => {
         wx.showToast({ title: '拍照失败', icon: 'none' });
@@ -527,16 +527,16 @@ Page({
   },
 
   /**
-   * 从相册选择图片
+   * 从相册选择图片 - 支持多张选择
    */
   chooseImage: function() {
     wx.chooseImage({
-      count: 1,
+      count: 9, // 最多支持9张照片
       sizeType: ['original', 'compressed'],
       sourceType: ['album'],
       success: (res) => {
-        // 调用识别API
-        this.recognizeImage(res.tempFilePaths[0]);
+        // 调用识别API，处理多张照片
+        this.recognizeMultiImage(res.tempFilePaths);
       },
       fail: (error) => {
         wx.showToast({ title: '选择图片失败', icon: 'none' });
@@ -545,14 +545,125 @@ Page({
   },
 
   /**
-   * 扫描二维码
+   * 多张图片识别
+   * @param {Array} imagePaths - 图片路径数组
+   */
+  recognizeMultiImage: function(imagePaths) {
+    if (!imagePaths || imagePaths.length === 0) {
+      wx.showToast({ title: '没有选择图片', icon: 'none' });
+      return;
+    }
+
+    wx.showLoading({ title: '识别中...' });
+    
+    // 如果是单张照片，直接识别
+    if (imagePaths.length === 1) {
+      this.recognizeSingleImage(imagePaths[0]);
+      return;
+    }
+
+    // 多张照片识别
+    this.recognizeMultipleImages(imagePaths);
+  },
+
+  /**
+   * 单张图片识别
+   * @param {string} imagePath - 图片路径
+   */
+  recognizeSingleImage: function(imagePath) {
+    // 调用后端API识别图片
+    DataManager.recognizeImage(imagePath).then(res => {
+      wx.hideLoading();
+      
+      if (res.code === 0 && res.data) {
+        // 识别成功，显示结果
+        this.showRecognitionResult(res.data, '');
+      } else {
+        // 识别失败，但返回空数据让用户手动填写
+        this.showRecognitionResult({
+          name: '',
+          manufacturer: '',
+          specification: '',
+          category: '其他',
+          dosage: '',
+          expiryDate: ''
+        }, '');
+      }
+    }).catch(error => {
+      wx.hideLoading();
+      console.error('图片识别失败:', error);
+      // 识别失败，但返回空数据让用户手动填写
+      this.showRecognitionResult({
+        name: '',
+        manufacturer: '',
+        specification: '',
+        category: '其他',
+        dosage: '',
+        expiryDate: ''
+      }, '');
+    });
+  },
+
+  /**
+   * 多张图片识别 - 依次识别并合并结果
+   * @param {Array} imagePaths - 图片路径数组
+   */
+  recognizeMultipleImages: function(imagePaths) {
+    const total = imagePaths.length;
+    let current = 0;
+    let mergedResult = {
+      name: '',
+      manufacturer: '',
+      specification: '',
+      category: '其他',
+      dosage: '',
+      expiryDate: ''
+    };
+
+    // 递归识别每张图片
+    const recognizeNext = () => {
+      if (current >= total) {
+        wx.hideLoading();
+        this.showRecognitionResult(mergedResult, '');
+        return;
+      }
+
+      // 更新加载提示，显示进度
+      wx.showLoading({ 
+        title: `识别中... ${current + 1}/${total}` 
+      });
+
+      DataManager.recognizeImage(imagePaths[current]).then(res => {
+        if (res.code === 0 && res.data) {
+          // 合并识别结果 - 优先使用第一张识别到的有效数据
+          if (!mergedResult.name && res.data.name) mergedResult.name = res.data.name;
+          if (!mergedResult.manufacturer && res.data.manufacturer) mergedResult.manufacturer = res.data.manufacturer;
+          if (!mergedResult.specification && res.data.specification) mergedResult.specification = res.data.specification;
+          if (mergedResult.category === '其他' && res.data.category !== '其他') mergedResult.category = res.data.category;
+          if (!mergedResult.dosage && res.data.dosage) mergedResult.dosage = res.data.dosage;
+          if (!mergedResult.expiryDate && res.data.expiryDate) mergedResult.expiryDate = res.data.expiryDate;
+        }
+        current++;
+        recognizeNext();
+      }).catch(error => {
+        console.error(`识别第${current + 1}张图片失败:`, error);
+        current++;
+        recognizeNext();
+      });
+    };
+
+    recognizeNext();
+  },
+
+  /**
+   * 扫描条形码/二维码
    */
   scanQRCode: function() {
     wx.scanCode({
       onlyFromCamera: true,
-      scanType: ['qrCode'],
+      scanType: ['barCode', 'qrCode'],
       success: (res) => {
-        console.log('二维码扫描结果:', res);
+        console.log('扫描结果:', res);
         
         // 处理扫描结果
         this.processQRCodeResult(res.result);
@@ -642,32 +753,7 @@ Page({
     });
   },
 
-  /**
-   * 图片识别
-   * @param {string} imagePath - 图片路径
-   */
-  recognizeImage: function(imagePath) {
-    wx.showLoading({ title: '识别中...' });
 
-    // 调用后端API识别图片
-    DataManager.recognizeImage(imagePath).then(res => {
-      wx.hideLoading();
-      
-      if (res.code === 0 && res.data) {
-        // 识别成功，显示结果
-        this.showRecognitionResult(res.data, '');
-      } else {
-        // 识别失败
-        this.showRecognitionFailed();
-      }
-    }).catch(error => {
-      wx.hideLoading();
-      wx.showToast({
-        title: '识别失败',
-        icon: 'none'
-      });
-    });
-  },
 
   /**
    * 显示识别结果

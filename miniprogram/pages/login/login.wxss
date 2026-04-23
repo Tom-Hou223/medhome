@@ -277,7 +277,7 @@
   border-color: #219a52;
 }
 
-/* 游客模式按钮 */
+/* 未登录模式按钮 */
 .guest-button {
   border: 2rpx solid #e5e5e5;
   background-color: #ffffff;

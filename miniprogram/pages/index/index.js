@@ -324,7 +324,7 @@ Page({
       
       // 根据错误类型显示不同的提示
       if (error.message === '未登录') {
-        // 游客模式，使用模拟数据
+        // 未登录模式，使用模拟数据
         this.loadMockData();
       } else if (error.message === '请先选择家庭') {
         // 已登录但未选择家庭
@@ -697,9 +697,9 @@ Page({
   onConfirmMedicine: function(e) {
     const medicine = e.currentTarget.dataset.medicine;
     
-    // 检查是否为游客模式
+    // 检查是否为未登录模式
     if (this.data.isGuestMode) {
-      // 游客模式：直接更新本地状态
+      // 未登录模式：直接更新本地状态
       this.updateMedicineStatus(medicine.id, 'completed');
       wx.showToast({ title: '已确认服药', icon: 'success' });
     } else {
@@ -765,10 +765,10 @@ Page({
   },
 
   /**
-   * 加载模拟数据（游客模式使用）
+   * 加载模拟数据（未登录模式使用）
    */
   loadMockData: function() {
-    // 从本地存储读取游客数据
+    // 从本地存储读取未登录数据
     const savedMedicines = wx.getStorageSync('guest_medicines') || [];
     const savedPlans = wx.getStorageSync('guest_plans') || [];
     const savedRecords = wx.getStorageSync('guest_records') || [];
@@ -904,7 +904,7 @@ Page({
 
     this.setData({ timeGroupedPlans: updatedGroups });
 
-    // 如果是游客模式，保存记录到本地存储
+    // 如果是未登录模式，保存记录到本地存储
     if (isGuestMode) {
       // 解析medicineId，获取planId和timeSlot
       const [planId, timeSlot] = medicineId.split('_');

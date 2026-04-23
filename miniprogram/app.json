@@ -63,7 +63,7 @@
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#ffffff",
-    "navigationBarTitleText": "药效记",
+    "navigationBarTitleText": "medhome",
     "navigationBarTextStyle": "black",
     "navigationStyle": "custom"
   },

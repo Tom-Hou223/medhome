@@ -486,15 +486,15 @@ Page({
   },
 
   /**
-   * 恢复默认游客数据
+   * 恢复默认未登录数据
    */
   onRestoreGuestData: function() {
     wx.showModal({
       title: '恢复默认数据',
-      content: '确定要恢复默认的游客数据吗？这将会清除当前的游客数据。',
+      content: '确定要恢复默认的未登录数据吗？这将会清除当前的未登录数据。',
       success: (res) => {
         if (res.confirm) {
-          // 清除现有的游客数据
+          // 清除现有的未登录数据
           DataManager.clearGuestData();
           
           // 显示成功提示

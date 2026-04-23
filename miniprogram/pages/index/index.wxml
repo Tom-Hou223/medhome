@@ -155,7 +155,7 @@
           <view class="progress-info">
             <text class="progress-text">{{item.completed}}/{{item.total}}</text>
             <view class="progress-bar">
-              <view class="progress-fill" style="width: {{(item.completed / item.total) * 100}}%"></view>
+              <view class="progress-fill" style="width: {{(item.completed / item.total) * 100}}"></view>
             </view>
           </view>
         </view>

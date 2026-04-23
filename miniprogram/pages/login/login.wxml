@@ -96,10 +96,10 @@
       </view>
     </view>
     
-    <!-- 游客模式 -->
+    <!-- 未登录模式 -->
     <view class="action-button guest-button" bindtap="onGuestLogin">
       <van-icon name="tour" size="24rpx" color="#999999" />
-      <text>游客模式</text>
+      <text>未登录模式</text>
       <text class="guest-desc">无需登录，浏览示例数据</text>
     </view>
   </view>

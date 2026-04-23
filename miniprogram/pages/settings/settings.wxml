@@ -120,7 +120,7 @@
   <view class="actions">
     <van-button type="primary" block bindtap="onSave">保存设置</van-button>
     <van-button type="default" block bindtap="onReset" style="margin-top: 16rpx;">恢复默认设置</van-button>
-    <van-button type="danger" block bindtap="onRestoreGuestData" style="margin-top: 16rpx;">恢复默认游客数据</van-button>
+    <van-button type="danger" block bindtap="onRestoreGuestData" style="margin-top: 16rpx;">恢复默认未登录数据</van-button>
   </view>
 
   <!-- 通知方式选择器 -->
