@@ -25,7 +25,8 @@
     "pages/backup/backup",
     "pages/hospital/hospital",
     "pages/about/about",
-    "pages/feedback/feedback"
+    "pages/feedback/feedback",
+    "pages/webview/webview"
   ],
   "tabBar": {
     "custom": true,
