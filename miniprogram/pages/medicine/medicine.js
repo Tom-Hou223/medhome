@@ -498,11 +498,13 @@ Page({
    */
   onScanCode: function() {
     wx.showActionSheet({
-      itemList: ['扫描二维码', '拍照识别', '从相册选择'],
+      itemList: ['药品溯源', '拍照识别', '从相册选择'],
       success: (res) => {
         if (res.tapIndex === 0) {
-          // 扫描二维码
-          this.scanQRCode();
+          // 药品溯源
+          wx.navigateTo({
+            url: '/pages/webview/webview?url=https://www.mashangfangxin.com/'
+          });
         } else if (res.tapIndex === 1) {
           // 拍照识别
           this.takePhoto();
