@@ -441,15 +441,92 @@ class RecognitionService {
       const fullText = words.join('\n');
       console.log('识别到的文字:', fullText);
 
-      const namePatterns = [
-        /([\u4e00-\u9fa5]+[片胶囊颗粒丸剂膏散液注射]+)/,
-        /([\u4e00-\u9fa5]{2,}[片胶囊颗粒丸]+)/
-      ];
-      for (const pattern of namePatterns) {
-        const match = fullText.match(pattern);
-        if (match) {
-          result.name = match[1];
-          break;
+      // 优先尝试从【药品名称】或【产品名称】标签中识别
+      let foundName = false;
+      
+      // 1. 尝试【药品名称】→ 通用名称
+      const drugNameMatch = fullText.match(/【药品名称】\s*[\s\S]*?通用名称[：:]\s*([^\n]+)/);
+      if (drugNameMatch && drugNameMatch[1]) {
+        result.name = drugNameMatch[1].trim();
+        console.log('✅ 从【药品名称】标签找到:', result.name);
+        foundName = true;
+      }
+      
+      // 2. 如果没有，尝试直接【产品名称】
+      if (!foundName) {
+        const productNameMatch = fullText.match(/【产品名称】\s*([^\n]+)/);
+        if (productNameMatch && productNameMatch[1]) {
+          result.name = productNameMatch[1].trim();
+          console.log('✅ 从【产品名称】标签找到:', result.name);
+          foundName = true;
+        }
+      }
+
+      // 如果标签没找到，再从单独行中查找
+      if (!result.name) {
+        let mainNameIndex = -1;
+        let mainName = '';
+        
+        // 先找到主要的名称（包含剂型关键词的行，支持中英文）
+        for (let i = 0; i < words.length; i++) {
+          const trimmed = words[i].trim();
+          if (trimmed.length >= 3 && trimmed.length <= 50 && (
+            trimmed.includes('片') || trimmed.includes('胶囊') || 
+            trimmed.includes('颗粒') || trimmed.includes('丸') || 
+            trimmed.includes('软膏') || trimmed.includes('溶液') ||
+            trimmed.includes('注射液') || trimmed.includes('散') ||
+            trimmed.includes('滴眼液') || trimmed.includes('眼膏') ||
+            trimmed.includes('乳膏') || trimmed.includes('凝胶') ||
+            trimmed.includes('酊') || trimmed.includes('膏') ||
+            trimmed.includes('气雾剂') || trimmed.includes('保险液') ||
+            trimmed.toLowerCase().includes('tablet') || 
+            trimmed.toLowerCase().includes('capsule') ||
+            trimmed.toLowerCase().includes('pill') ||
+            trimmed.toLowerCase().includes('softgel') ||
+            trimmed.toLowerCase().includes('syrup') ||
+            trimmed.toLowerCase().includes('cream') ||
+            trimmed.toLowerCase().includes('ointment') ||
+            trimmed.toLowerCase().includes('liquid')
+          )) {
+            if (!trimmed.includes('用法') && !trimmed.includes('用量') && 
+                !trimmed.includes('症状') && !trimmed.includes('【') && 
+                !trimmed.includes('】') && !trimmed.includes('[') &&
+                !trimmed.toLowerCase().includes('suggested') &&
+                !trimmed.toLowerCase().includes('direction')) {
+              mainNameIndex = i;
+              mainName = trimmed;
+              break;
+            }
+          }
+        }
+        
+        if (mainNameIndex !== -1) {
+          // 尝试合并前一行作为前缀
+          let fullName = mainName;
+          if (mainNameIndex > 0) {
+            const prevWord = words[mainNameIndex - 1].trim();
+            // 如果前一行看起来是品牌或产品前缀（包含牌、叶黄素、维生素、白药等词）
+            if (prevWord.length > 0 && prevWord.length <= 30 &&
+                (prevWord.includes('牌') || prevWord.includes('维生素') || 
+                 prevWord.includes('叶') || prevWord.includes('素') ||
+                 prevWord.includes('钙') || prevWord.includes('锌') ||
+                 prevWord.includes('铁') || prevWord.includes('镁') ||
+                 prevWord.includes('药') || prevWord.includes('白'))) {
+              fullName = prevWord + mainName;
+            } else if (prevWord.length > 0 && prevWord.length <= 15 && 
+                       !prevWord.includes('【') && !prevWord.includes('OTC')) {
+              // 只要不是标签，短文字都尝试合并
+              fullName = prevWord + mainName;
+            }
+          }
+          
+          // 去除可能的“说明书”后缀
+          if (fullName.includes('说明书')) {
+            fullName = fullName.replace('说明书', '').trim();
+          }
+          
+          result.name = fullName;
+          console.log('✅ 从单独行找到药品名:', result.name);
         }
       }
 
@@ -457,82 +534,449 @@ class RecognitionService {
         console.log('⚠️ 未识别到药品名称，留空待用户填写');
       }
 
+      // 规格识别 - 优先匹配【规格】或【产品规格】标签（支持标签中间换行和英文
       const specPatterns = [
-        /【规\s*格】[^\n]*(\d+\.?\d*[gG克mMLl毫mgMG]+[^\n]*)/,
-        /规格[^\n]*(\d+\.?\d*[gG克mMLl毫mgMG]+[^\n]*)/,
-        /规格[^\n]*每[袋瓶支片粒][^\n]*(\d+\.?\d*[gG克mMLl毫mgMG]+[^\n]*)/,
-        /(\d+\.?\d*[gmGMμµ]+\s*[×x*]\s*\d+[粒片袋支瓶盒])/,
-        /(\d+\.?\d*[gmGMμµ]+\s*[×x*]\s*\d+\s*[×x*]\s*\d+[粒片袋支])/,
-        /(\d+[mM][lL]\s*[×x*]\s*\d+[支瓶])/,
-        /每[袋瓶支片粒][^\n]*(\d+\.?\d*[gG克mMLl毫mgMG]+)/
+        /【产品规格】\s*([^【\[]+)/i,
+        /【产[\s\S]*?品[\s\S]*?规[\s\S]*?格】\s*([^【\[]+)/i,
+        /【规格】\s*([^【\[]+)/i,
+        /【规[\s\S]*?格】\s*([^【\[]+)/i,
+        /【规格类型】\s*([^【\[]+)/i,
+        /\[规格\]\s*([^【\[]+)/i,
+        /规格[：:]\s*([^【\[]+)/i,
+        /净含量[：:]\s*([^【\[\n]+)/i,
+        /serving[ \t]*size[ \t]*:[\s\S]*?([^\n]+)/i,
+        /strength[ \t]*:[\s\S]*?([^\n]+)/i,
+        /dosage[ \t]*:[\s\S]*?([^\n]+)/i,
+        /size[ \t]*:[\s\S]*?([^\n]+)/i
       ];
       for (const pattern of specPatterns) {
         const match = fullText.match(pattern);
-        if (match) {
-          result.specification = match[1].trim();
+        if (match && match[1]) {
+          let specText = match[1].trim();
+          // 合并直到遇到标签或完整句子
+          const lines = specText.split(/\n/);
+          let fullSpec = '';
+          for (const line of lines) {
+            if (!line.trim()) continue;
+            // 如果遇到下一个标签开头就停止
+            if (line.includes('【') || line.includes('[') || 
+                line.includes('用法') || line.includes('用量')) {
+              break;
+            }
+            if (fullSpec) fullSpec += ' ';
+            fullSpec += line.trim();
+            // 如果句子完整了就停止
+            if (fullSpec.includes('克') && fullSpec.length > 10) break;
+          }
+          result.specification = fullSpec || lines[0].trim();
+          console.log('✅ 找到规格:', result.specification);
           break;
         }
       }
+      
+      // 包装规格识别（如X袋/盒、X片/盒、X粒/盒等）
+      const packPatterns = [
+        /包装[：:]\s*([^\n]+)/,
+        /【包装】\s*([^\n]+)/,
+        /(\d+袋\/盒)/,
+        /(\d+片\/盒)/,
+        /(\d+粒\/盒)/,
+        /(\d+丸\/盒)/,
+        /(\d+胶囊\/盒)/,
+        /(\d+包\/盒)/,
+        /(\d+瓶\/盒)/,
+        /(\d+支\/盒)/,
+        /(\d+盒)/,
+        /铝罐包装[\s\S]*?(\d+瓶)/
+      ];
+      for (const pattern of packPatterns) {
+        const match = fullText.match(pattern);
+        if (match) {
+          const packStr = match[1] || match[0];
+          if (packStr && packStr.length <= 30) {
+            // 如果已经有规格，就追加；否则就直接使用
+            if (result.specification) {
+              if (!result.specification.includes(packStr)) {
+                result.specification += ' ' + packStr;
+                console.log('✅ 追加包装规格:', packStr);
+              }
+            } else {
+              result.specification = packStr;
+              console.log('✅ 找到包装规格:', packStr);
+            }
+            break;
+          }
+        }
+      }
 
+      // 用法用量识别 - 支持【用法用量】【使用方法】或【食用方法】（支持标签中间换行和英文
       const dosagePatterns = [
-        /【用法用量】[^\n]*(口服[^\n]*)/,
-        /用法用量[^\n]*(口服[^\n]*)/,
-        /用法用量[^\n]*(外用[^\n]*)/,
-        /用法用量[^\n]*(开水冲服[^\n]*)/,
-        /(口服.*?[一二三四五六七八九十\d]+次)/,
-        /(外用.*?[一二三四五六七八九十\d]+次)/,
-        /(开水冲服.*?[一二三四五六七八九十\d]+次)/,
-        /([一二三四五六七八九十\d]+次.*?[一二三四五六七八九十\d]+[片粒袋])/
+        /【用法用量】(?:\s*\n)?([^【\[]+)/i,
+        /【用[\s\S]*?法[\s\S]*?用[\s\S]*?量】(?:\s*\n)?([^【\[]+)/i,
+        /【使用方法】(?:\s*\n)?([^【\[]+)/i,
+        /【使[\s\S]*?用[\s\S]*?方[\s\S]*?法】(?:\s*\n)?([^【\[]+)/i,
+        /【食用方法】(?:\s*\n)?([^【\[]+)/i,
+        /【食[\s\S]*?用[\s\S]*?方[\s\S]*?法】(?:\s*\n)?([^【\[]+)/i,
+        /\[用法用量\](?:\s*\n)?([^【\[]+)/i,
+        /用法用量[：:](?:\s*\n)?([^【\[]+)/i,
+        /使用方法[：:](?:\s*\n)?([^【\[]+)/i,
+        /食用及食用方法[：:](?:\s*\n)?([^【\[]+)/i,
+        /食用方法[：:](?:\s*\n)?([^【\[]+)/i,
+        /suggested[ \t]*use[ \t]*:[\s\S]*?([^\n]+)/i,
+        /directions[ \t]*:[\s\S]*?([^\n]+)/i,
+        /direction[ \t]*:[\s\S]*?([^\n]+)/i,
+        /how[ \t]*to[ \t]*use[ \t]*:[\s\S]*?([^\n]+)/i
       ];
       for (const pattern of dosagePatterns) {
         const match = fullText.match(pattern);
-        if (match) {
-          result.dosage = match[1].trim();
-          break;
+        if (match && match[1]) {
+          let dosageText = match[1].trim();
+          // 找到合适的内容，尝试找到包含关键词的行，或第一行
+          const lines = dosageText.split(/\n/).filter(line => line.trim().length > 0);
+          let validDosage = '';
+          
+          // 先尝试找包含用法关键词的行（中英文）
+          let startIndex = -1;
+          for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (line.includes('口服') || line.includes('外用') || 
+                line.includes('一次') || line.includes('一日') ||
+                line.includes('每次') || line.includes('每日') ||
+                line.toLowerCase().includes('take') || 
+                line.toLowerCase().includes('adult') ||
+                line.toLowerCase().includes('tablet') ||
+                line.toLowerCase().includes('chew') ||
+                line.toLowerCase().includes('once') ||
+                line.toLowerCase().includes('twice')) {
+              startIndex = i;
+              break;
+            }
+          }
+          
+          // 如果找到了开头，尝试合并相关行直到句子完整
+          if (startIndex !== -1) {
+            validDosage = lines[startIndex].trim();
+            // 如果句子不完整（没有句号、逗号等结尾，或者是单字结尾），尝试合并下一行
+            const endings = [ '。', '！', '？', '）', ')', '；', ';', '】', ']' ];
+            let needsMore = true;
+            // 检查是否需要合并更多内容
+            if (validDosage.length < 8) {
+              needsMore = true;
+            } else if (validDosage.length >= 8) {
+              // 检查结尾是否完整
+              let isComplete = false;
+              for (const end of endings) {
+                if (validDosage.endsWith(end)) {
+                  isComplete = true;
+                  break;
+                }
+              }
+              needsMore = !isComplete;
+            }
+            
+            if (needsMore && startIndex + 1 < lines.length) {
+              const nextLine = lines[startIndex + 1].trim();
+              // 检查下一行是否是用法的延续（不是下一个标签或无关内容）
+              if (!nextLine.includes('【') && !nextLine.includes('[') && 
+                  !nextLine.includes('成份') && !nextLine.includes('性状') &&
+                  !nextLine.includes('规格')) {
+                validDosage += nextLine;
+                // 如果还是不完整，再尝试合并第三行
+                if (validDosage.length < 15 && startIndex + 2 < lines.length) {
+                  const thirdLine = lines[startIndex + 2].trim();
+                  if (!thirdLine.includes('【') && !thirdLine.includes('[')) {
+                    validDosage += thirdLine;
+                  }
+                }
+              }
+            }
+          }
+          
+          // 如果没找到，就取第一行
+          if (!validDosage && lines.length > 0) {
+            validDosage = lines[0].trim();
+          }
+          
+          if (validDosage) {
+            result.dosage = validDosage;
+            console.log('✅ 找到用法用量:', result.dosage);
+            break;
+          }
         }
       }
 
-      const expiryPatterns = [
-        /【有效期至】\s*?(\d{4}[.\-\/年]\d{1,2}(?:[.\-\/月]\d{1,2}(?:日)?)?)/,
-        /有效期至\s*?(\d{4}[.\-\/年]\d{1,2}(?:[.\-\/月]\d{1,2}(?:日)?)?)/,
-        /有效期\s*?(\d{4}[.\-\/年]\d{1,2}(?:[.\-\/月]\d{1,2}(?:日)?)?)/,
-        /到期日\s*?(\d{4}[.\-\/年]\d{1,2}(?:[.\-\/月]\d{1,2}(?:日)?)?)/,
-        /有效期?\s*?(\d{4}[.\-\/年]\d{1,2}(?:[.\-\/月]\d{1,2}(?:日)?)?)/,
-        /至\s*?(\d{4}[.\-\/年]\d{1,2}(?:[.\-\/月]\d{1,2}(?:日)?)?)/,
-        /(\d{4}\.\d{1,2}(?:\.\d{1,2})?)/
-      ];
-      console.log('📋 完整识别文字:', JSON.stringify(fullText));
-      for (const pattern of expiryPatterns) {
-        const match = fullText.match(pattern);
-        console.log('🔍 正在匹配日期，pattern:', pattern, 'match:', match);
-        if (match) {
-          const dateStr = match[1].trim();
-          console.log('✅ 找到日期字符串:', dateStr);
-          result.expiryDate = this.formatDate(dateStr);
-          break;
+      // 过期日期识别 - 优先匹配明确的标签
+      let expiryDateStr = null;
+      
+      // 0. 最优先：尝试匹配【保质期至】【有效期至】或【有效期】至 的模式（支持方括号和英文格式
+      // 首先，检查是否存在有效期相关标签
+      const hasExpiryToTag = /【有效期】\s*至/.test(fullText) || /\[有效期\]\s*至/.test(fullText) || /有效期[:：]?\s*至/.test(fullText) || /【有效期至】/.test(fullText) || /\[有效期至\]/.test(fullText) || /有效期至/.test(fullText) || /【保质期至】/.test(fullText) || /\[保质期至\]/.test(fullText) || /保质期至/.test(fullText) || /exp[ \t]*:/.test(fullText.toLowerCase()) || /expiry[ \t]*:/.test(fullText.toLowerCase()) || /best[ \t]*by/.test(fullText.toLowerCase()) || /use[ \t]*by/.test(fullText.toLowerCase());
+      
+      if (hasExpiryToTag) {
+        console.log('🔍 检测到有效期/保质期标签（含英文），正在搜索日期...');
+        
+        // 1. 尝试所有可能的直接匹配模式，不分优先级，找到就返回
+        const allPatterns = [
+          /【保质期至】\s*[:：]?\s*(\d{4}[\.\-\/年]?\d{1,2}[\.\-\/月]?(?:\d{0,2}日)?)/i,
+          /\[保质期至\]\s*[:：]?\s*(\d{4}[\.\-\/年]?\d{1,2}[\.\-\/月]?(?:\d{0,2}日)?)/i,
+          /保质期至\s*[:：]?\s*(\d{4}[\.\-\/年]?\d{1,2}[\.\-\/月]?(?:\d{0,2}日)?)/i,
+          /【有效期至】\s*[:：]?\s*(\d{4}[\.\-\/年]?\d{1,2}[\.\-\/月]?(?:\d{0,2}日)?)/i,
+          /\[有效期至\]\s*[:：]?\s*(\d{4}[\.\-\/年]?\d{1,2}[\.\-\/月]?(?:\d{0,2}日)?)/i,
+          /有效期至\s*[:：]?\s*(\d{4}[\.\-\/年]?\d{1,2}[\.\-\/月]?(?:\d{0,2}日)?)/i,
+          /【有效期】\s*至\s*(\d{4}[\.\-\/年]?\d{1,2}[\.\-\/月]?(?:\d{0,2}日)?)/i,
+          /\[有效期\]\s*至\s*(\d{4}[\.\-\/年]?\d{1,2}[\.\-\/月]?(?:\d{0,2}日)?)/i,
+          /有效期[:：]?\s*至\s*(\d{4}[\.\-\/年]?\d{1,2}[\.\-\/月]?(?:\d{0,2}日)?)/i,
+          /exp[ \t]*[:][ \t]*(\d{1,2}[\/]\d{4})/i,
+          /expiry[ \t]*[:][ \t]*(\d{1,2}[\/]\d{4})/i,
+          /best[ \t]*by[ \t]*[:][ \t]*(\d{1,2}[\/]\d{4})/i,
+          /use[ \t]*by[ \t]*[:][ \t]*(\d{1,2}[\/]\d{4})/i,
+          /exp[ \t]*[:][ \t]*(\d{4}[\/]\d{1,2})/i,
+          /expiry[ \t]*[:][ \t]*(\d{4}[\/]\d{1,2})/i
+        ];
+        
+        for (const pattern of allPatterns) {
+          const match = fullText.match(pattern);
+          if (match && match[1]) {
+            expiryDateStr = match[1];
+            console.log('✅ 直接匹配到日期:', expiryDateStr);
+            break;
+          }
+        }
+        
+        // 2. 如果直接匹配失败，尝试在标签附近搜索（包括前面和后面
+        if (!expiryDateStr) {
+          let expiryToIndex = -1;
+          
+          // 查找所有可能的标签位置
+          const labelPatterns = [
+            '【保质期至】', '[保质期至]', '保质期至', 
+            '【有效期至】', '[有效期至]', '有效期至',
+            '【有效期】至', '[有效期]至', '有效期：至', '有效期:至', '有效期至'
+          ];
+          
+          for (const label of labelPatterns) {
+            const idx = fullText.indexOf(label);
+            if (idx !== -1) {
+              expiryToIndex = idx;
+              break;
+            }
+          }
+          
+          if (expiryToIndex !== -1) {
+            // 搜索标签后面的内容（优先）
+            const searchAfter = fullText.substring(expiryToIndex, Math.min(expiryToIndex + 60, fullText.length));
+            console.log('📋 搜索范围（标签后面）:', searchAfter);
+            
+            let nearbyDateMatch = 
+              searchAfter.match(/(\d{4}\.\d{1,2}(?:\.\d{1,2})?)/) || 
+              searchAfter.match(/(\d{4}-\d{1,2}(?:-\d{1,2})?)/) || 
+              searchAfter.match(/(\d{4}\/\d{1,2}(?:\/\d{1,2})?)/) ||
+              searchAfter.match(/(\d{4}年\d{1,2}月(?:\d{1,2}日)?)/) || 
+              searchAfter.match(/(\d{8})/);
+            
+            if (nearbyDateMatch && nearbyDateMatch[1]) {
+              expiryDateStr = nearbyDateMatch[1];
+              console.log('✅ 在标签后面搜索到日期:', expiryDateStr);
+            } else {
+              // 如果标签后面没找到，搜索标签前面的内容
+              const searchBefore = fullText.substring(Math.max(0, expiryToIndex - 100), expiryToIndex);
+              console.log('📋 搜索范围（标签前面）:', searchBefore);
+              
+              // 在标签前面查找所有可能的日期
+              console.log('📋 开始在标签前面搜索日期...');
+              
+              // 查找所有可能的日期格式
+              const allDatePatterns = [
+                /(\d{4}\.\d{1,2}(?:\.\d{1,2})?)/g,
+                /(\d{4}-\d{1,2}(?:-\d{1,2})?)/g,
+                /(\d{4}\/\d{1,2}(?:\/\d{1,2})?)/g,
+                /(\d{4}年\d{1,2}月(?:\d{1,2}日)?)/g,
+                /(\d{8})/g
+              ];
+              
+              let allFoundDates = [];
+              
+              for (const datePattern of allDatePatterns) {
+                const dates = [...searchBefore.matchAll(datePattern)];
+                for (const match of dates) {
+                  allFoundDates.push({
+                    date: match[1],
+                    index: match.index
+                  });
+                }
+              }
+              
+              // 按位置排序，最接近标签的在最后
+              allFoundDates.sort((a, b) => a.index - b.index);
+              console.log('📋 找到的所有日期:', allFoundDates.map(d => d.date));
+              
+              // 从最后一个开始检查（最接近标签的）
+              for (let i = allFoundDates.length - 1; i >= 0; i--) {
+                const found = allFoundDates[i];
+                const possibleDate = found.date;
+                
+                // 特殊逻辑：如果有有效期标签，并且是在标签前面找到的最近日期
+                // 直接采用这个日期作为有效期日期（不管黑名单，因为生产日期在更前面）
+                expiryDateStr = possibleDate;
+                console.log('✅ 在标签前面搜索到日期:', expiryDateStr);
+                break;
+              }
+            }
+          }
         }
       }
+      
+      // 1. 然后尝试匹配失效日期标签
+      if (!expiryDateStr) {
+        const fxSectionMatch = fullText.match(/失效日期[\s\S]*?(\d{8})/);
+        if (fxSectionMatch && fxSectionMatch[1]) {
+          const possibleDate = fxSectionMatch[1];
+          const year = parseInt(possibleDate.substring(0, 4));
+          if (year >= 1990 && year <= 2100) {
+            expiryDateStr = possibleDate;
+            console.log('✅ 从失效日期标签后找到8位日期:', expiryDateStr);
+          }
+        }
+      }
+      
+      // 如果没找到，尝试更宽松的匹配，查看失效日期后面的所有内容
+      if (!expiryDateStr) {
+        const fxFullSectionMatch = fullText.match(/失效日期[\s\S]*?$/);
+        if (fxFullSectionMatch && fxFullSectionMatch[0]) {
+          console.log('📋 失效日期后面的完整文本:', fxFullSectionMatch[0]);
+          // 查找所有8位数字
+          const eightDigitMatches = fxFullSectionMatch[0].match(/(\d{8})/g);
+          if (eightDigitMatches) {
+            for (const possibleDate of eightDigitMatches) {
+              const year = parseInt(possibleDate.substring(0, 4));
+              if (year >= 1990 && year <= 2100) {
+                expiryDateStr = possibleDate;
+                console.log('✅ 从失效日期后找到有效日期:', expiryDateStr);
+                break;
+              }
+            }
+          }
+        }
+      }
+      
+      // 2. 如果没找到，继续其他方法（注意：这里有效期至已经在上面处理了，所以不重复处理）
+        if (!expiryDateStr) {
+          const expiryPatterns = [
+            /【失效日期】\s*[:：]?\s*(\d{4}[\.\-\/年]?\d{1,2}[\.\-\/月]?\d{0,2})|失效日期\s*[:：]?\s*(\d{8}|\d{4}[\.\-\/年]?\d{1,2}[\.\-\/月]?\d{0,2})/,
+            /(\d{4}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01]))/,
+            /(\d{4}年\d{1,2}月(?:\d{1,2}日)?)/,
+            /(\d{4}\.\d{1,2}(?:\.\d{1,2})?)/,
+            /(\d{4}-\d{1,2}(?:-\d{1,2})?)/,
+            /(\d{4}\/\d{1,2}(?:\/\d{1,2})?)/
+          ];
+        console.log('📋 完整识别文字:', JSON.stringify(fullText));
+        for (const pattern of expiryPatterns) {
+          const match = fullText.match(pattern);
+          console.log('🔍 正在匹配日期，pattern:', pattern, 'match:', match);
+          if (match) {
+            let dateStr = null;
+            for (let i = 1; i < match.length; i++) {
+              if (match[i]) {
+                dateStr = match[i];
+                break;
+              }
+            }
+            if (!dateStr) dateStr = match[0];
 
+            // 验证年份是否合理
+            let validYear = false;
+            if (dateStr.length >= 4) {
+              const year = parseInt(dateStr.substring(0, 4));
+              if (year >= 1990 && year <= 2100) {
+                validYear = true;
+              }
+            }
+            if (!validYear) {
+              console.log('⚠️ 年份不合理，跳过:', dateStr);
+              continue;
+            }
+
+            const matchIndex = match.index || 0;
+            const checkLength = 20;
+            const contextBefore = fullText.substring(Math.max(0, matchIndex - checkLength), matchIndex);
+            const contextAfter = fullText.substring(matchIndex, matchIndex + checkLength);
+            const context = (contextBefore + contextAfter);
+            
+            // 完整黑名单（总是检查生产日期，除非日期明确是在【有效期】至标签后面）
+            const blacklistKeywords = ['说明书编制日期', '生产日期', '生产批号', '产品批号', '有效期三年', '批准文号'];
+            
+            let isBlacklisted = false;
+            for (const keyword of blacklistKeywords) {
+              if (context.includes(keyword)) {
+                isBlacklisted = true;
+                console.log('⚠️ 发现黑名单关键词，跳过:', keyword);
+                break;
+              }
+            }
+            
+            if (!isBlacklisted) {
+              expiryDateStr = dateStr;
+              console.log('✅ 找到日期字符串:', expiryDateStr);
+              break;
+            }
+          }
+        }
+      }
+      
+      if (expiryDateStr) {
+        result.expiryDate = this.formatDate(expiryDateStr);
+      }
+
+      // 生产厂商识别 - 优先匹配【上市许可持有人】或【生产企业】标签
       const mfgPatterns = [
-        /【生产厂家】[^\n]*([\u4e00-\u9fa5]+)/,
-        /生产厂家[^\n]*([\u4e00-\u9fa5]+)/,
-        /【生产企业】[^\n]*([\u4e00-\u9fa5]+)/,
-        /生产企业[^\n]*([\u4e00-\u9fa5]+)/,
-        /([\u4e00-\u9fa5]+制药[\u4e00-\u9fa5]*有限[公司责任]*)/,
-        /([\u4e00-\u9fa5]+药业[\u4e00-\u9fa5]*有限[公司责任]*)/,
-        /([\u4e00-\u9fa5]+制药[\u4e00-\u9fa5]*)/,
-        /([\u4e00-\u9fa5]+药业[\u4e00-\u9fa5]*)/
+        // 优先匹配完整的标签内容，支持跨行情况
+        /【药品上市许可持有人\/生产企业】[\s\S]*?([^\n]+)/,
+        /制造[\s\S]*?商[：:]\s*([^\n]+)/,
+        /制造商[：:]\s*([^\n]+)/,
+        /【备案人\/生产企业】[：:]\s*([^\n]+)/,
+        /【备案人\/生产单位\/售后服务单位】[：:]\s*([^\n]+)/,
+        /【上市许可持有人】[\s\S]*?名\s*称[：:]\s*([^\n]+)/,
+        /【生产企业】[\s\S]*?企业名称[：:]\s*([^\n]+)/,
+        /【生产企业】[：:]\s*([^\n]+)/,
+        /备案人\/生产企业[：:]\s*([^\n]+)/,
+        /【生产企业】[^\n]+?([^\n]{5,})/,
+        /\[上市许可持有人\][：:]\s*([^\n]+)/,
+        /\[生产企业\][：:]\s*([^\n]+)/,
+        /生产企业[：:]\s*([^\n]+)/,
+        /生产厂家[：:]\s*([^\n]+)/
       ];
       for (const pattern of mfgPatterns) {
         const match = fullText.match(pattern);
-        if (match) {
-          result.manufacturer = match[1].trim();
-          break;
+        if (match && match[1]) {
+          let mfgName = match[1].trim();
+          // 去除后面的额外信息（如·生产地址...等）
+          mfgName = mfgName.split(/[·、\n]/)[0].trim();
+          // 验证厂商名长度，太短的可能是错误匹配（如"司"）
+          if (mfgName.length >= 3) {
+            result.manufacturer = mfgName;
+            console.log('✅ 从标签找到厂商:', result.manufacturer);
+            break;
+          }
+        }
+      }
+      
+      // 兜底 - 从单独文字行找厂商名
+      if (!result.manufacturer) {
+        for (const word of words) {
+          let trimmed = word.trim();
+          // 去除可能的标签前缀
+          trimmed = trimmed.replace(/^【上市许可持有人】|^\[上市许可持有人\]|^上市许可持有人|^【生产企业】|^\[生产企业\]|^生产企业|^【备案人\/生产企业】|^\[备案人\/生产企业\]|^备案人\/生产企业/, '').trim();
+          // 排除一些明显不是厂商名的内容（如"制药一致性评价"）
+          if ((trimmed.includes('制药') || trimmed.includes('药业')) && !trimmed.includes('评价') && trimmed.length <= 50 && trimmed.length >= 4) {
+            result.manufacturer = trimmed;
+            console.log('✅ 从单独行找到厂商:', result.manufacturer);
+            break;
+          }
         }
       }
 
       if (result.name) {
-        if (result.name.includes('感冒') || result.name.includes('退热') || result.name.includes('抗病毒')) {
+        if (result.name.includes('感冒') || result.name.includes('退热') || result.name.includes('抗病毒') || result.name.includes('板蓝根')) {
           result.category = '感冒用药';
         } else if (result.name.includes('消炎') || result.name.includes('阿莫西林') || result.name.includes('头孢') || result.name.includes('霉素')) {
           result.category = '抗生素';
@@ -566,8 +1010,14 @@ class RecognitionService {
       
       let year = '', month = '', day = '';
       
+      // 处理8位纯数字格式（如20280302）
+      if (/^\d{8}$/.test(dateStr)) {
+        year = dateStr.substring(0, 4);
+        month = dateStr.substring(4, 6);
+        day = dateStr.substring(6, 8);
+      }
       // 处理各种日期格式
-      if (dateStr.includes('年') && dateStr.includes('月')) {
+      else if (dateStr.includes('年') && dateStr.includes('月')) {
         // 格式：2026年12月31日 或 2026年12月
         const matchFull = dateStr.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
         if (matchFull) {
@@ -592,12 +1042,21 @@ class RecognitionService {
           day = parts[2] ? parts[2].padStart(2, '0') : '01'; // 如果没有日，默认01
         }
       } else if (dateStr.includes('/')) {
-        // 格式：2026/12/31 或 2026/12
+        // 格式：2026/12/31 或 2026/12 或 12/2026（英文格式）
         const parts = dateStr.split('/');
         if (parts.length >= 2) {
-          year = parts[0];
-          month = parts[1].padStart(2, '0');
-          day = parts[2] ? parts[2].padStart(2, '0') : '01'; // 如果没有日，默认01
+          // 检查是 YYYY/MM 还是 MM/YYYY
+          if (parseInt(parts[0]) > 1000) {
+            // YYYY/MM/DD 格式
+            year = parts[0];
+            month = parts[1].padStart(2, '0');
+            day = parts[2] ? parts[2].padStart(2, '0') : '01';
+          } else {
+            // MM/YYYY 格式（英文）
+            month = parts[0].padStart(2, '0');
+            year = parts[1];
+            day = '01';
+          }
         }
       } else if (dateStr.includes('.')) {
         // 格式：2026.12.31 或 2026.12
@@ -609,12 +1068,19 @@ class RecognitionService {
         }
       }
       
+      // 额外的检查，确保年份合理（1900-2100之间）
+      if (year && (parseInt(year) < 1900 || parseInt(year) > 2100)) {
+        console.log('⚠️ 年份不在合理范围内，返回空');
+        return '';
+      }
+      
       if (year && month && day) {
         const formatted = `${year}.${month}.${day}`;
         console.log('📅 识别到过期日期:', formatted);
         return formatted;
       }
       
+      console.log('⚠️ 日期解析失败:', dateStr);
       return '';
     } catch (error) {
       console.error('❌ 日期格式化失败:', error.message);
