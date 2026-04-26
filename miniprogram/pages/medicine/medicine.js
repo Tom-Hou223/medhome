@@ -31,6 +31,12 @@ Page({
       dosage: ''
     },
     
+    // 多图拍照缓冲区
+    photoBuffer: [],
+    showPhotoBufferModal: false,
+    isRecognizing: false,
+    lastPhotoTime: 0, // 最后拍照时间戳
+    
     categories: [
       { label: '抗生素', value: '抗生素' },
       { label: '解热镇痛', value: '解热镇痛' },
@@ -509,16 +515,50 @@ Page({
   },
 
   /**
-   * 拍照 - 支持多张照片
+   * 拍照 - 存入缓冲区
+   * 5分钟内再次拍照直接回到弹窗，超过5分钟清空缓冲区
    */
   takePhoto: function() {
+    const now = Date.now();
+    const lastTime = this.data.lastPhotoTime;
+    const fiveMinutes = 5 * 60 * 1000;
+    
+    // 如果有缓冲照片，检查是否超过5分钟
+    if (this.data.photoBuffer.length > 0) {
+      if (lastTime > 0 && (now - lastTime) > fiveMinutes) {
+        // 超过5分钟，清空缓冲区
+        this.setData({
+          photoBuffer: [],
+          lastPhotoTime: 0
+        });
+        wx.showToast({ title: '已超时，重新拍照', icon: 'none' });
+      } else {
+        // 5分钟内，直接打开弹窗
+        this.setData({
+          showPhotoBufferModal: true
+        });
+        return;
+      }
+    }
+    
+    const remainingCount = 9 - this.data.photoBuffer.length;
+    if (remainingCount <= 0) {
+      wx.showToast({ title: '最多9张照片', icon: 'none' });
+      return;
+    }
+    
     wx.chooseImage({
-      count: 9, // 最多支持9张照片
+      count: remainingCount,
       sizeType: ['original', 'compressed'],
       sourceType: ['camera'],
       success: (res) => {
-        // 调用识别API，处理多张照片
-        this.recognizeMultiImage(res.tempFilePaths);
+        // 添加到缓冲区
+        const newBuffer = [...this.data.photoBuffer, ...res.tempFilePaths];
+        this.setData({
+          photoBuffer: newBuffer,
+          showPhotoBufferModal: true,
+          lastPhotoTime: Date.now()
+        });
       },
       fail: (error) => {
         wx.showToast({ title: '拍照失败', icon: 'none' });
@@ -624,6 +664,7 @@ Page({
     const recognizeNext = () => {
       if (current >= total) {
         wx.hideLoading();
+        this.setData({ isRecognizing: false });
         this.showRecognitionResult(mergedResult, '');
         return;
       }
@@ -653,6 +694,107 @@ Page({
     };
 
     recognizeNext();
+  },
+
+  // ==================== 多图拍照缓冲区管理 ====================
+
+  /**
+   * 关闭照片缓冲区弹窗
+   */
+  closePhotoBufferModal: function() {
+    this.setData({
+      showPhotoBufferModal: false
+    });
+  },
+
+  /**
+   * 继续添加照片 - 从弹窗调用，直接打开相机
+   */
+  onContinueAddPhoto: function() {
+    const remainingCount = 9 - this.data.photoBuffer.length;
+    if (remainingCount <= 0) {
+      wx.showToast({ title: '最多9张照片', icon: 'none' });
+      return;
+    }
+    
+    wx.chooseImage({
+      count: remainingCount,
+      sizeType: ['original', 'compressed'],
+      sourceType: ['camera'],
+      success: (res) => {
+        const newBuffer = [...this.data.photoBuffer, ...res.tempFilePaths];
+        this.setData({
+          photoBuffer: newBuffer,
+          showPhotoBufferModal: true,
+          lastPhotoTime: Date.now()
+        });
+      },
+      fail: (error) => {
+        wx.showToast({ title: '拍照失败', icon: 'none' });
+      }
+    });
+  },
+
+  /**
+   * 从缓冲区移除单张照片
+   */
+  onRemovePhotoFromBuffer: function(e) {
+    const index = e.currentTarget.dataset.index;
+    const newBuffer = [...this.data.photoBuffer];
+    newBuffer.splice(index, 1);
+    this.setData({
+      photoBuffer: newBuffer
+    });
+    
+    if (newBuffer.length === 0) {
+      this.setData({
+        showPhotoBufferModal: false
+      });
+    }
+  },
+
+  /**
+   * 清空照片缓冲区
+   */
+  onClearPhotoBuffer: function() {
+    wx.showModal({
+      title: '确认清空',
+      content: '确定要清空所有已拍照片吗？',
+      confirmText: '清空',
+      confirmColor: '#e74c3c',
+      cancelText: '取消',
+      success: (res) => {
+        if (res.confirm) {
+          this.setData({
+            photoBuffer: [],
+            showPhotoBufferModal: false,
+            lastPhotoTime: 0
+          });
+          wx.showToast({
+            title: '已清空',
+            icon: 'success'
+          });
+        }
+      }
+    });
+  },
+
+  /**
+   * 开始识别缓冲区中的照片
+   */
+  onRecognizeBufferPhotos: function() {
+    if (this.data.photoBuffer.length === 0) {
+      wx.showToast({ title: '没有照片', icon: 'none' });
+      return;
+    }
+
+    this.setData({
+      showPhotoBufferModal: false,
+      isRecognizing: true
+    });
+
+    // 调用批量识别
+    this.recognizeMultiImage(this.data.photoBuffer);
   },
 
   /**

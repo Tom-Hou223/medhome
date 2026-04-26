@@ -174,4 +174,58 @@
       />
     </view>
   </van-popup>
+
+  <!-- 多图拍照缓冲区弹窗 -->
+  <van-popup
+    show="{{ showPhotoBufferModal }}"
+    round
+    position="center"
+    closeable
+    bind:close="closePhotoBufferModal"
+    custom-style="width: 90%; max-height: 80%;"
+  >
+    <view class="photo-buffer-modal">
+      <view class="photo-buffer-header">
+        <text class="photo-buffer-title">照片缓冲区 ({{photoBuffer.length}}/9)</text>
+        <text class="photo-buffer-subtitle">已拍摄照片，可继续添加</text>
+      </view>
+      
+      <view class="photo-buffer-grid">
+        <view class="photo-buffer-item" wx:for="{{photoBuffer}}" wx:key="*this">
+          <image class="photo-buffer-image" src="{{item}}" mode="aspectFill" />
+          <view class="photo-buffer-remove" bindtap="onRemovePhotoFromBuffer" data-index="{{index}}">
+            <van-icon name="cross" size="14px" color="#fff" />
+          </view>
+        </view>
+      </view>
+      
+      <view class="photo-buffer-actions">
+        <van-button 
+          type="default" 
+          size="small"
+          icon="plus"
+          bindtap="onContinueAddPhoto"
+          disabled="{{photoBuffer.length >= 9}}"
+        >
+          继续添加
+        </van-button>
+        <van-button 
+          type="danger" 
+          size="small"
+          icon="delete"
+          bindtap="onClearPhotoBuffer"
+        >
+          清空
+        </van-button>
+        <van-button 
+          type="primary" 
+          size="small"
+          icon="scan"
+          bindtap="onRecognizeBufferPhotos"
+        >
+          开始识别
+        </van-button>
+      </view>
+    </view>
+  </van-popup>
 </view>
