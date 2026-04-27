@@ -12,6 +12,11 @@ Page({
     
     plans: [],
     filterType: 'all',
+
+    familyMembers: [],
+    selectedMemberId: null,
+    selectedMemberName: '',
+    selectedMemberRole: '',
     
     showAddDialog: false,
     editingPlan: null,
@@ -19,6 +24,7 @@ Page({
     datePickerType: 'start',
     showTimePicker: false,
     currentTime: '08:00',
+    showMedicinePicker: false,
     
     formData: {
       medicineId: '',
@@ -48,22 +54,36 @@ Page({
   },
 
   onLoad: function() {
-    this.getSystemInfo();
-    this.checkLoginStatus();
-    this.initSeniorMode();
-    this.loadPlans();
-    this.loadMedicines();
-    this.loadMembers();
-    this.updateTabBar();
+    var self = this;
+    self.getSystemInfo();
+    self.checkLoginStatus();
+    self.initSeniorMode();
+    self.restoreMemberState();
+    self.loadFamilyMembers().then(function() {
+      if (!self.data.selectedMemberId && !self.data.selectedMemberName && self.data.isAdmin && self.data.familyMembers.length > 0) {
+        self.selectDefaultMember();
+      }
+    });
+    self.loadPlans();
+    self.loadMedicines();
+    self.loadMembers();
+    self.updateTabBar();
   },
 
   onShow: function() {
-    this.checkLoginStatus();
-    this.initSeniorMode();
-    this.loadPlans();
-    this.loadMedicines();
-    this.loadMembers();
-    this.updateTabBar();
+    var self = this;
+    self.checkLoginStatus();
+    self.initSeniorMode();
+    self.restoreMemberState();
+    self.loadFamilyMembers().then(function() {
+      if (!self.data.selectedMemberId && !self.data.selectedMemberName && self.data.isAdmin && self.data.familyMembers.length > 0) {
+        self.selectDefaultMember();
+      }
+    });
+    self.loadPlans();
+    self.loadMedicines();
+    self.loadMembers();
+    self.updateTabBar();
   },
 
   checkLoginStatus: function() {
@@ -74,6 +94,63 @@ Page({
       isGuestMode: mode.isGuestMode,
       isAdmin: isAdmin
     });
+  },
+
+  restoreMemberState: function() {
+    const selectedMemberId = wx.getStorageSync('selectedMemberId');
+    const selectedMemberName = wx.getStorageSync('selectedMemberName') || '';
+    const selectedMemberRole = wx.getStorageSync('selectedMemberRole') || '';
+    this.setData({
+      selectedMemberId: selectedMemberId || null,
+      selectedMemberName: selectedMemberName,
+      selectedMemberRole: selectedMemberRole
+    });
+  },
+
+  selectDefaultMember: function() {
+    var currentUserId = DataManager.getCurrentUserId();
+    var member = null;
+    if (currentUserId) {
+      member = this.data.familyMembers.find(function(m) {
+        return String(m.id) === String(currentUserId);
+      });
+    }
+    if (!member) {
+      member = this.data.familyMembers[0];
+    }
+    if (member) {
+      this.setData({
+        selectedMemberId: member.id,
+        selectedMemberName: member.name,
+        selectedMemberRole: member.role || ''
+      });
+      wx.setStorageSync('selectedMemberId', member.id);
+      wx.setStorageSync('selectedMemberName', member.name);
+      wx.setStorageSync('selectedMemberRole', member.role || '');
+      this.loadPlans();
+    }
+  },
+
+  onMemberChange: function(e) {
+    const { memberId, memberName } = e.detail;
+    
+    let selectedMemberRole = '';
+    if (memberId) {
+      const member = this.data.familyMembers.find(m => String(m.id) === String(memberId));
+      selectedMemberRole = member ? member.role : '';
+    }
+    
+    wx.setStorageSync('selectedMemberId', memberId || '');
+    wx.setStorageSync('selectedMemberName', memberName);
+    wx.setStorageSync('selectedMemberRole', selectedMemberRole);
+    
+    this.setData({
+      selectedMemberId: memberId || null,
+      selectedMemberName: memberName,
+      selectedMemberRole: selectedMemberRole
+    });
+    
+    this.loadPlans();
   },
 
   getSystemInfo: function() {
@@ -103,6 +180,35 @@ Page({
       });
       this.getTabBar().updateTabBar();
     }
+  },
+
+  loadFamilyMembers: function() {
+    const familyId = DataManager.getCurrentFamilyId();
+    if (!familyId) {
+      this.setData({ familyMembers: [] });
+      return Promise.resolve();
+    }
+    
+    return DataManager.getFamilyMembers(familyId).then(members => {
+      const formatted = (members || []).map(m => ({
+        id: m.userId,
+        name: m.nickname || '未设置昵称',
+        role: m.role || 'member'
+      }));
+      this.setData({ familyMembers: formatted });
+    }).catch(() => {
+      return DataManager.getFamilyMembersList().then(res => {
+        const list = res.data || [];
+        const formatted = list.map(m => ({
+          id: m.id || m.userId,
+          name: m.name || m.nickname || '未设置昵称',
+          role: m.role || 'member'
+        }));
+        this.setData({ familyMembers: formatted });
+      }).catch(() => {
+        this.setData({ familyMembers: [] });
+      });
+    });
   },
 
   loadPlans: function(filterType = null) {
@@ -145,11 +251,17 @@ Page({
         return plan;
       });
       
-      // 非管理员只展示当前用户自己的用药计划
-      if (!this.data.isAdmin) {
-        const currentUserId = DataManager.getCurrentUserId();
-        if (currentUserId) {
-          plans = plans.filter(plan => String(plan.memberId) === String(currentUserId));
+      if (this.data.isAdmin && this.data.selectedMemberName) {
+        plans = plans.filter(function(plan) {
+          return plan.memberName === this.data.selectedMemberName;
+        }.bind(this));
+      } else if (!this.data.isAdmin) {
+        var userInfo = wx.getStorageSync('userInfo');
+        var currentUserName = userInfo ? (userInfo.nickname || '') : '';
+        if (currentUserName) {
+          plans = plans.filter(function(plan) {
+            return plan.memberName === currentUserName;
+          });
         }
       }
       
@@ -546,7 +658,7 @@ Page({
     });
   },
 
-  // 显示药品列表模态框
+  // 显示药品列表弹窗
   showMedicineListModal: function() {
     const medicines = this.data.medicines ? this.data.medicines : [];
     
@@ -558,20 +670,19 @@ Page({
       return;
     }
     
-    // 使用actionSheet显示药品列表
-    const medicineNames = medicines.map(med => med.name);
-    
-    wx.showActionSheet({
-      itemList: medicineNames,
-      success: (res) => {
-        const selectedMedicine = medicines[res.tapIndex];
-        this.setData({
-          'formData.medicineId': selectedMedicine.id,
-          'formData.medicineName': selectedMedicine.name
-        });
-      },
-      fail: (res) => {
-      }
+    this.setData({ showMedicinePicker: true });
+  },
+
+  onCloseMedicinePicker: function() {
+    this.setData({ showMedicinePicker: false });
+  },
+
+  onSelectMedicineItem: function(e) {
+    const medicine = e.currentTarget.dataset.medicine;
+    this.setData({
+      'formData.medicineId': medicine.id,
+      'formData.medicineName': medicine.name,
+      showMedicinePicker: false
     });
   },
 

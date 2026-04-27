@@ -1,6 +1,16 @@
 <view class="plan-container {{isSeniorMode ? 'senior-mode' : ''}}" style="--status-bar-height: {{statusBarHeight}}px">
   <nav-bar title="用药计划" showBack="{{true}}" />
 
+  <view class="plan-member-selector" wx:if="{{isAdmin}}">
+    <member-selector
+      members="{{familyMembers}}"
+      selectedId="{{selectedMemberId}}"
+      isAdmin="{{isAdmin}}"
+      selectedRole="{{selectedMemberRole}}"
+      bind:change="onMemberChange"
+    />
+  </view>
+
   <view class="filter-tabs">
     <van-tabs active="{{filterType}}" bind:change="onFilterChange">
       <van-tab title="全部" name="all" />
@@ -207,5 +217,35 @@
       bind:confirm="onTimeConfirm"
       bind:cancel="onTimeCancel"
     />
+  </van-popup>
+
+  <!-- 药品选择器 -->
+  <van-popup
+    show="{{showMedicinePicker}}"
+    round
+    position="bottom"
+    custom-style="max-height: 55%; border-radius: 40rpx 40rpx 0 0; padding-bottom: calc(110rpx + env(safe-area-inset-bottom));"
+    bind:close="onCloseMedicinePicker"
+  >
+    <view class="medicine-picker-popup">
+      <view class="popup-header">
+        <text class="popup-title">选择药品</text>
+        <text class="popup-close" bindtap="onCloseMedicinePicker">✕</text>
+      </view>
+      <view class="popup-list">
+        <view
+          wx:for="{{medicines}}"
+          wx:key="id"
+          class="member-item"
+          bindtap="onSelectMedicineItem"
+          data-medicine="{{item}}"
+        >
+          <view class="member-item-left">
+            <van-icon name="pill" size="22px" color="#666" />
+            <text class="member-item-name">{{item.name}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
   </van-popup>
 </view>

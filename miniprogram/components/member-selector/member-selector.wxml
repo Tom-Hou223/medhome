@@ -1,0 +1,44 @@
+<view class="member-selector-card {{isAdmin ? 'clickable' : ''}}" bindtap="onToggleSelector">
+  <view class="selector-header">
+    <text class="selector-title">查看成员</text>
+    <van-icon name="user-o" size="20px" color="#27AE60" />
+  </view>
+  <view class="selector-body">
+    <view class="selector-display">
+      <text class="selector-name">{{displayName}}</text>
+      <van-icon wx:if="{{isAdmin}}" name="arrow-down" size="16px" color="#999" />
+    </view>
+    <van-tag wx:if="{{isAdmin}}" type="{{roleTagType}}" size="medium">{{roleTagText}}</van-tag>
+  </view>
+</view>
+
+<van-popup
+  show="{{showSelector}}"
+  round
+  position="bottom"
+  custom-style="max-height: 50%; border-radius: 40rpx 40rpx 0 0; padding-bottom: calc(110rpx + env(safe-area-inset-bottom));"
+  bind:close="onCloseSelector"
+>
+  <view class="selector-popup">
+    <view class="popup-header">
+      <text class="popup-title">选择查看成员</text>
+      <text class="popup-close" bindtap="onCloseSelector">✕</text>
+    </view>
+
+    <view class="popup-list">
+      <view
+        wx:for="{{memberList}}"
+        wx:key="id"
+        class="member-item {{item.isSelected ? 'selected' : 'unselected'}}"
+        bindtap="onSelectMember"
+        data-member="{{item}}"
+      >
+        <view class="member-item-left">
+          <van-icon name="user-o" size="22px" color="{{item.isSelected ? '#27AE60' : '#999'}}" />
+          <text class="member-item-name">{{item.name}}</text>
+        </view>
+        <van-icon wx:if="{{item.isSelected}}" name="success" size="20px" color="#27AE60" />
+      </view>
+    </view>
+  </view>
+</van-popup>

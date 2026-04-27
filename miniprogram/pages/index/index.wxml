@@ -2,6 +2,15 @@
 <view wx:if="{{isSeniorMode}}" class="index-senior-container {{seniorTheme === 'yellow' ? 'theme-yellow' : 'theme-white'}}" style="--status-bar-height: {{statusBarHeight}}px">
   <nav-bar title="首页" showBack="{{false}}" />
 
+  <member-selector
+    wx:if="{{isAdmin && isSeniorMode}}"
+    members="{{familyMembers}}"
+    selectedId="{{selectedMemberId}}"
+    isAdmin="{{isAdmin}}"
+    selectedRole="{{selectedMemberRole}}"
+    bind:change="onMemberChange"
+  />
+
   <!-- 简化的统计卡片 -->
   <view class="senior-stats">
     <view class="senior-stat-card">
@@ -74,40 +83,51 @@
   <nav-bar title="首页" showBack="{{false}}" />
 
   <view class="stats-section">
-    <view class="stat-card" wx:if="{{familyName}}">
-      <view class="stat-header">
-        <text class="stat-title">当前家庭</text>
-        <van-icon name="home-o" size="20px" color="#27AE60" />
+    <view class="stat-row" wx:if="{{familyName}}">
+      <view class="stat-card stat-card-half family-stat-card">
+        <view class="stat-header">
+          <text class="stat-title">当前家庭</text>
+          <van-icon name="home-o" size="18px" color="#27AE60" />
+        </view>
+        <view class="stat-body">
+          <view class="family-info">
+            <text class="family-name">{{familyName}}</text>
+            <van-tag wx:if="{{isAdmin}}" type="success" size="medium">管理员</van-tag>
+            <van-tag wx:else type="default" size="medium">成员</van-tag>
+          </view>
+        </view>
       </view>
-      <view class="stat-body">
-        <view class="family-info">
-          <text class="family-name">{{familyName}}</text>
-          <van-tag wx:if="{{isAdmin}}" type="success" size="medium">管理员</van-tag>
-          <van-tag wx:else type="default" size="medium">成员</van-tag>
+
+      <view class="stat-card stat-card-half">
+        <view class="stat-header">
+          <text class="stat-title">药品统计</text>
+          <van-icon name="medal-o" size="18px" color="#27AE60" />
+        </view>
+        <view class="stat-body">
+          <view class="stat-item">
+            <text class="stat-number">{{medicineStats.total}}</text>
+            <text class="stat-label">总数</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-number stat-warning">{{medicineStats.expiring}}</text>
+            <text class="stat-label">临期</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-number stat-danger">{{medicineStats.expired}}</text>
+            <text class="stat-label">过期</text>
+          </view>
         </view>
       </view>
     </view>
 
-    <view class="stat-card">
-      <view class="stat-header">
-        <text class="stat-title">药品统计</text>
-        <van-icon name="medal-o" size="20px" color="#27AE60" />
-      </view>
-      <view class="stat-body">
-        <view class="stat-item">
-          <text class="stat-number">{{medicineStats.total}}</text>
-          <text class="stat-label">总数</text>
-        </view>
-        <view class="stat-item">
-          <text class="stat-number stat-warning">{{medicineStats.expiring}}</text>
-          <text class="stat-label">临期</text>
-        </view>
-        <view class="stat-item">
-          <text class="stat-number stat-danger">{{medicineStats.expired}}</text>
-          <text class="stat-label">过期</text>
-        </view>
-      </view>
-    </view>
+    <member-selector
+      wx:if="{{isAdmin && !isSeniorMode}}"
+      members="{{familyMembers}}"
+      selectedId="{{selectedMemberId}}"
+      isAdmin="{{isAdmin}}"
+      selectedRole="{{selectedMemberRole}}"
+      bind:change="onMemberChange"
+    />
   </view>
 
   <view class="calendar-section">

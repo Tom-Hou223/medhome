@@ -92,6 +92,12 @@ Page({
     familyName: '',
     isAdmin: false,
 
+    // 成员相关
+    familyMembers: [],
+    selectedMemberId: null,
+    selectedMemberName: '',
+    selectedMemberRole: '',
+
     // 日期相关
     selectedDate: '',
     dayStatusMap: {},
@@ -115,6 +121,7 @@ Page({
     this.checkLoginStatus();
     this.initSeniorMode();
     this.initDate();
+    this.loadMembers();
     this.loadData();
     this.updateTabBar();
   },
@@ -124,13 +131,28 @@ Page({
     this.initSeniorMode();
     this.updateTabBar();
     
-    // 重新初始化日期，确保加载当前月份的状态
-    const today = new Date();
-    const year = today.getFullYear();
-    const monthNumber = today.getMonth() + 1;
+    var self = this;
+    var storedMemberId = wx.getStorageSync('selectedMemberId');
+    var storedMemberName = wx.getStorageSync('selectedMemberName');
+    var storedMemberRole = wx.getStorageSync('selectedMemberRole') || '';
     
-    // 清空旧的日历状态，避免显示其他家庭的数据
-    this.setData({
+    self.setData({
+      selectedMemberId: storedMemberId || null,
+      selectedMemberName: storedMemberName || '',
+      selectedMemberRole: storedMemberRole || ''
+    });
+    
+    self.loadMembers().then(function() {
+      if (!self.data.selectedMemberId && !self.data.selectedMemberName && self.data.familyMembers.length > 0) {
+        self.selectDefaultMember();
+      }
+    });
+    
+    var today = new Date();
+    var year = today.getFullYear();
+    var monthNumber = today.getMonth() + 1;
+    
+    self.setData({
       dayStatusMap: {},
       todayPlans: [],
       timeGroupedPlans: [],
@@ -138,9 +160,8 @@ Page({
       todayRecords: []
     });
     
-    // 重新加载月度状态和当天数据
-    this.loadMonthStatus(year, monthNumber);
-    this.loadData();
+    self.loadMonthStatus(year, monthNumber);
+    self.loadData();
   },
 
   /**
@@ -185,6 +206,91 @@ Page({
       familyName: familyInfo ? familyInfo.name : '',
       isAdmin: isAdmin
     });
+  },
+
+  loadMembers: function() {
+    const familyId = DataManager.getCurrentFamilyId();
+    if (!familyId) {
+      this.setData({ familyMembers: [] });
+      return Promise.resolve();
+    }
+    
+    return DataManager.getFamilyMembers(familyId).then(members => {
+      const formatted = (members || []).map(m => ({
+        id: m.userId,
+        name: m.nickname || '未设置昵称',
+        role: m.role || 'member'
+      }));
+      this.setData({ familyMembers: formatted });
+    }).catch(() => {
+      return DataManager.getFamilyMembersList().then(res => {
+        const list = res.data || [];
+        const formatted = list.map(m => ({
+          id: m.id || m.userId,
+          name: m.name || m.nickname || '未设置昵称',
+          role: m.role || 'member'
+        }));
+        this.setData({ familyMembers: formatted });
+      }).catch(() => {
+        this.setData({ familyMembers: [] });
+      });
+    });
+  },
+
+  selectDefaultMember: function() {
+    var currentUserId = DataManager.getCurrentUserId();
+    var member = null;
+    if (currentUserId) {
+      member = this.data.familyMembers.find(function(m) {
+        return String(m.id) === String(currentUserId);
+      });
+    }
+    if (!member) {
+      member = this.data.familyMembers[0];
+    }
+    if (member) {
+      this.setData({
+        selectedMemberId: member.id,
+        selectedMemberName: member.name,
+        selectedMemberRole: member.role || ''
+      });
+      wx.setStorageSync('selectedMemberId', member.id);
+      wx.setStorageSync('selectedMemberName', member.name);
+      wx.setStorageSync('selectedMemberRole', member.role || '');
+      
+      var today = new Date();
+      var year = today.getFullYear();
+      var monthNumber = today.getMonth() + 1;
+      this.loadMonthStatus(year, monthNumber);
+      this.loadData();
+    }
+  },
+
+  onMemberChange: function(e) {
+    const { memberId, memberName } = e.detail;
+    
+    let selectedMemberRole = '';
+    if (memberId) {
+      const member = this.data.familyMembers.find(m => String(m.id) === String(memberId));
+      selectedMemberRole = member ? member.role : '';
+    }
+    
+    wx.setStorageSync('selectedMemberId', memberId || '');
+    wx.setStorageSync('selectedMemberName', memberName);
+    wx.setStorageSync('selectedMemberRole', selectedMemberRole);
+    
+    this.setData({
+      selectedMemberId: memberId || null,
+      selectedMemberName: memberName,
+      selectedMemberRole: selectedMemberRole
+    });
+    
+    const today = new Date();
+    const year = today.getFullYear();
+    const monthNumber = today.getMonth() + 1;
+    
+    this.loadMonthStatus(year, monthNumber);
+    this.loadData();
   },
 
   getSystemInfo: function() {
@@ -251,11 +357,17 @@ Page({
     ]).then(([plansRes, medicinesRes, recordsRes]) => {
       let allPlans = plansRes.data || [];
       
-      // 非管理员只展示当前用户自己的用药计划
-      if (!this.data.isAdmin) {
-        const currentUserId = DataManager.getCurrentUserId();
-        if (currentUserId) {
-          allPlans = allPlans.filter(plan => String(plan.memberId) === String(currentUserId));
+      if (this.data.isAdmin && this.data.selectedMemberName) {
+        allPlans = allPlans.filter(function(plan) {
+          return plan.memberName === this.data.selectedMemberName;
+        }.bind(this));
+      } else if (!this.data.isAdmin) {
+        var userInfo = wx.getStorageSync('userInfo');
+        var currentUserName = userInfo ? (userInfo.nickname || '') : '';
+        if (currentUserName) {
+          allPlans = allPlans.filter(function(plan) {
+            return plan.memberName === currentUserName;
+          });
         }
       }
       
@@ -366,15 +478,20 @@ Page({
     ]).then(([plansRes, recordsRes]) => {
       let allPlans = plansRes.data || [];
       
-      // 非管理员只展示当前用户自己的用药计划
-      if (!this.data.isAdmin) {
-        const currentUserId = DataManager.getCurrentUserId();
-        if (currentUserId) {
-          allPlans = allPlans.filter(plan => String(plan.memberId) === String(currentUserId));
+      if (this.data.isAdmin && this.data.selectedMemberName) {
+        allPlans = allPlans.filter(function(plan) {
+          return plan.memberName === this.data.selectedMemberName;
+        }.bind(this));
+      } else if (!this.data.isAdmin) {
+        var userInfo = wx.getStorageSync('userInfo');
+        var currentUserName = userInfo ? (userInfo.nickname || '') : '';
+        if (currentUserName) {
+          allPlans = allPlans.filter(function(plan) {
+            return plan.memberName === currentUserName;
+          });
         }
       }
       
-      // 包含所有状态的计划，不仅仅是active，这样可以计算已完成计划的状态
       const activePlans = allPlans;
       const monthRecords = recordsRes.data || [];
       const dayStatusMap = {};
