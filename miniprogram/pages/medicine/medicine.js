@@ -501,10 +501,8 @@ Page({
       itemList: ['药品溯源', '拍照识别', '从相册选择'],
       success: (res) => {
         if (res.tapIndex === 0) {
-          // 药品溯源
-          wx.navigateTo({
-            url: '/pages/webview/webview?url=https://www.mashangfangxin.com/'
-          });
+          // 药品溯源 - 弹出选择拍照或相册
+          this.showTraceSourceOption();
         } else if (res.tapIndex === 1) {
           // 拍照识别
           this.takePhoto();
@@ -513,6 +511,89 @@ Page({
           this.chooseImage();
         }
       }
+    });
+  },
+
+  /**
+   * 药品溯源 - 选择来源选项
+   */
+  showTraceSourceOption: function() {
+    wx.showActionSheet({
+      itemList: ['拍照溯源', '打开相册'],
+      success: (res) => {
+        if (res.tapIndex === 0) {
+          // 拍照溯源
+          this.takeTracePhoto('camera');
+        } else if (res.tapIndex === 1) {
+          // 打开相册
+          this.takeTracePhoto('album');
+        }
+      }
+    });
+  },
+
+  /**
+   * 药品溯源 - 拍照识别
+   */
+  takeTracePhoto: function(sourceType) {
+    wx.chooseImage({
+      count: 1,
+      sizeType: ['original', 'compressed'],
+      sourceType: [sourceType],
+      success: (res) => {
+        const imagePath = res.tempFilePaths[0];
+        this.recognizeTraceCode(imagePath);
+      },
+      fail: (error) => {
+        wx.showToast({ title: '选择图片失败', icon: 'none' });
+      }
+    });
+  },
+
+  /**
+   * 识别药品溯源码
+   */
+  recognizeTraceCode: function(imagePath) {
+    wx.showLoading({ title: '识别中...' });
+    
+    // 调用后端 API 识别溯源码
+    DataManager.recognizeImage(imagePath).then(res => {
+      wx.hideLoading();
+      
+      if (res.code === 0 && res.data && res.data.traceCode) {
+        // 识别成功，保存图片到全局数据，然后跳转到溯源码确认页面
+        getApp().globalData.traceCodeImage = imagePath;
+        wx.navigateTo({
+          url: `/pages/trace-confirm/trace-confirm?traceCode=${encodeURIComponent(res.data.traceCode)}`
+        });
+      } else {
+        // 识别失败，提示并提供重新拍摄选项
+        wx.showModal({
+          title: '提示',
+          content: '未识别到有效溯源码，请重新拍摄',
+          confirmText: '重新拍摄',
+          cancelText: '取消',
+          success: (modalRes) => {
+            if (modalRes.confirm) {
+              this.takeTracePhoto();
+            }
+          }
+        });
+      }
+    }).catch(error => {
+      wx.hideLoading();
+      // 识别失败，提示并提供重新拍摄选项
+      wx.showModal({
+        title: '提示',
+        content: '识别失败，请重新拍摄',
+        confirmText: '重新拍摄',
+        cancelText: '取消',
+        success: (modalRes) => {
+          if (modalRes.confirm) {
+            this.takeTracePhoto();
+          }
+        }
+      });
     });
   },
 

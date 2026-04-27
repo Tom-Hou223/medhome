@@ -429,7 +429,8 @@ class RecognitionService {
         category: '其他',
         dosage: '',
         expiryDate: '',  // 新增：过期日期
-        daysToExpiry: 730
+        daysToExpiry: 730,
+        traceCode: ''  // 新增：药品追溯码
       };
 
       if (!ocrData.words_result || ocrData.words_result.length === 0) {
@@ -972,6 +973,30 @@ class RecognitionService {
             console.log('✅ 从单独行找到厂商:', result.manufacturer);
             break;
           }
+        }
+      }
+
+      // 药品追溯码识别
+      const traceCodePatterns = [
+        /药品追溯码[\s\S]*?(\d{20})/,
+        /药品标识码[：:]\s*(\d+)\s*序列号[：:]\s*(\d+)/,
+        /药品追溯码[\s\S]*?(\d+)/,
+        /追溯码[：:]\s*(\d+)/
+      ];
+      
+      for (const pattern of traceCodePatterns) {
+        const match = fullText.match(pattern);
+        if (match) {
+          if (match.length === 3 && match[1] && match[2]) {
+            // 如果是药品标识码和序列号分开的情况，合并起来
+            result.traceCode = match[1] + match[2];
+            console.log('✅ 从药品标识码和序列号合并找到追溯码:', result.traceCode);
+          } else if (match[1]) {
+            // 单个追溯码
+            result.traceCode = match[1];
+            console.log('✅ 找到药品追溯码:', result.traceCode);
+          }
+          if (result.traceCode) break;
         }
       }
 

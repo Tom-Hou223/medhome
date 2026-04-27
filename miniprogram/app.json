@@ -26,7 +26,8 @@
     "pages/hospital/hospital",
     "pages/about/about",
     "pages/feedback/feedback",
-    "pages/webview/webview"
+    "pages/webview/webview",
+    "pages/trace-confirm/trace-confirm"
   ],
   "tabBar": {
     "custom": true,

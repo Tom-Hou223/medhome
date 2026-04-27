@@ -1,0 +1,76 @@
+<view class="container" style="--status-bar-height: {{statusBarHeight}}px">
+  <nav-bar title="溯源码确认" showBack="{{true}}" />
+  
+  <view class="content">
+    <view class="hint-text">
+      请核对扫描结果，确认无误后查询
+    </view>
+    
+    <!-- 溯源码输入框和照片对照区域 -->
+    <view class="form-item">
+      <view class="label">溯源码</view>
+      <view class="trace-code-section">
+        <view class="input-wrapper">
+          <input 
+            class="input" 
+            value="{{traceCode}}" 
+            bindinput="bindTraceCodeInput"
+            placeholder="请输入溯源码"
+          />
+          <button class="rescan-btn" bindtap="onRescan">
+            <text class="rescan-text">重新扫码</text>
+          </button>
+        </view>
+        
+        <!-- 溯源码照片 - 放在输入框旁边方便对照 -->
+        <view class="photo-preview-section" wx:if="{{imagePaths.length > 0}}">
+          <view class="label">溯源码照片</view>
+          <view class="photo-preview-container">
+            <view 
+              wx:for="{{imagePaths}}" 
+              wx:key="{{index}}" 
+              class="photo-preview-item"
+            >
+              <image class="photo-preview" src="{{item}}" mode="aspectFit" />
+              <view 
+                class="delete-btn-small" 
+                bindtap="onDeleteImage" 
+                data-index="{{index}}"
+              >
+                ×
+              </view>
+            </view>
+            <view 
+              wx:if="{{imagePaths.length < 9}}" 
+              class="add-photo-small" 
+              bindtap="onAddImage"
+            >
+              <text class="add-icon-small">+</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 如果没有照片，显示添加照片区域 -->
+    <view class="form-item" wx:if="{{imagePaths.length === 0}}">
+      <view class="label">溯源码照片</view>
+      <view class="add-photo-area" bindtap="onAddImage">
+        <text class="add-icon-large">+</text>
+        <text class="add-text-large">点击添加溯源码照片</text>
+      </view>
+    </view>
+    
+    <!-- 确认并查询按钮 -->
+    <button class="confirm-btn" bindtap="onConfirm">
+      <text class="confirm-text">确认并查询</text>
+    </button>
+    
+    <!-- 提示信息 -->
+    <view class="tip-box">
+      <text class="tip-text">
+        提示：确认后将自动复制溯源码并打开码上放心网站，您只需在网站中粘贴即可查询
+      </text>
+    </view>
+  </view>
+</view>
