@@ -117,9 +117,20 @@ class UserManager {
   static clearUserInfo() {
     wx.removeStorageSync('userInfo');
   }
+
+  static getCurrentUserId() {
+    const userInfo = this.getUserInfo();
+    return userInfo ? userInfo.userId : null;
+  }
 }
 
 class DataManager {
+  // 获取当前登录用户ID
+  static getCurrentUserId() {
+    const userInfo = UserManager.getUserInfo();
+    return userInfo ? userInfo.userId : null;
+  }
+  
   // 登录状态管理
   static getCurrentMode() {
     const isLoggedIn = wx.getStorageSync('isLoggedIn') || false;

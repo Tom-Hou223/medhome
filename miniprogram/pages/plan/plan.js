@@ -145,6 +145,14 @@ Page({
         return plan;
       });
       
+      // 非管理员只展示当前用户自己的用药计划
+      if (!this.data.isAdmin) {
+        const currentUserId = DataManager.getCurrentUserId();
+        if (currentUserId) {
+          plans = plans.filter(plan => String(plan.memberId) === String(currentUserId));
+        }
+      }
+      
       // 根据 filterType 过滤，默认为 'all'
       const currentFilterType = filterType !== null ? filterType : (this.data.filterType || 'all');
       

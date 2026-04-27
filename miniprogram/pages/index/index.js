@@ -249,8 +249,18 @@ Page({
       DataManager.getMedicines(),
       DataManager.getRecords(targetDate)
     ]).then(([plansRes, medicinesRes, recordsRes]) => {
+      let allPlans = plansRes.data || [];
+      
+      // 非管理员只展示当前用户自己的用药计划
+      if (!this.data.isAdmin) {
+        const currentUserId = DataManager.getCurrentUserId();
+        if (currentUserId) {
+          allPlans = allPlans.filter(plan => String(plan.memberId) === String(currentUserId));
+        }
+      }
+      
       // 处理数据
-      const plansForDate = plansRes.data.filter(plan => {
+      const plansForDate = allPlans.filter(plan => {
         if (plan.status !== 'active') return false;
         
         // 格式化计划的开始和结束日期，确保格式统一
@@ -354,8 +364,18 @@ Page({
       DataManager.getPlans(),
       DataManager.getRecordsByRange(startDate, endDate)
     ]).then(([plansRes, recordsRes]) => {
+      let allPlans = plansRes.data || [];
+      
+      // 非管理员只展示当前用户自己的用药计划
+      if (!this.data.isAdmin) {
+        const currentUserId = DataManager.getCurrentUserId();
+        if (currentUserId) {
+          allPlans = allPlans.filter(plan => String(plan.memberId) === String(currentUserId));
+        }
+      }
+      
       // 包含所有状态的计划，不仅仅是active，这样可以计算已完成计划的状态
-      const activePlans = plansRes.data;
+      const activePlans = allPlans;
       const monthRecords = recordsRes.data || [];
       const dayStatusMap = {};
 
