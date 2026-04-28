@@ -97,11 +97,11 @@
         <!-- 开始日期 -->
         <view class="form-item" bindtap="onStartDateSelect">
           <view class="form-label">
-            <text>开始日期</text>
+            <text>开始时间</text>
             <text class="required-mark">*</text>
           </view>
           <view class="form-value">
-            <text class="form-value-text">{{formData.startDate || '选择开始日期'}}</text>
+            <text class="form-value-text">{{formData.startDate || '选择开始时间'}}</text>
             <van-icon name="arrow" size="16px" color="#999" />
           </view>
         </view>
@@ -185,9 +185,9 @@
     </view>
   </van-popup>
 
-  <!-- 日期选择器 -->
+  <!-- 日期选择器（结束日期用日历） -->
   <van-popup
-    show="{{ showDatePicker }}"
+    show="{{ datePickerType === 'end' && showDatePicker }}"
     round
     position="bottom"
     custom-style="height: 80%"
@@ -199,10 +199,25 @@
     </view>
     <view class="calendar-content">
       <calendar
-        value="{{ formData[datePickerType === 'start' ? 'startDate' : 'endDate'] }}"
+        value="{{ formData.endDate }}"
         bind:select="onCalendarSelect"
       />
     </view>
+  </van-popup>
+
+  <!-- 开始时间选择器（年月日时分） -->
+  <van-popup
+    show="{{ datePickerType === 'start' && showDatePicker }}"
+    round
+    position="bottom"
+  >
+    <van-datetime-picker
+      type="datetime"
+      value="{{ startDatetimeValue }}"
+      min-date="{{ startDatetimeMin }}"
+      bind:confirm="onStartDatetimeConfirm"
+      bind:cancel="onStartDatetimeCancel"
+    />
   </van-popup>
 
   <!-- 时间选择器 -->

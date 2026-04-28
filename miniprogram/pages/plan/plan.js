@@ -23,6 +23,9 @@ Page({
     showDatePicker: false,
     datePickerType: 'start',
     showTimePicker: false,
+    showStartDatetimePicker: false,
+    startDatetimeValue: new Date().getTime(),
+    startDatetimeMin: new Date().getTime(),
     currentTime: '08:00',
     showMedicinePicker: false,
     
@@ -553,6 +556,17 @@ Page({
       return;
     }
 
+    var startError = this.validateStartDatetime(startDate);
+    if (startError) {
+      wx.showModal({
+        title: '开始时间无效',
+        content: startError,
+        showCancel: false,
+        confirmText: '知道了'
+      });
+      return;
+    }
+
     if (!timeSlots || timeSlots.length === 0) {
       wx.showToast({
         title: '请选择服药时间',
@@ -723,21 +737,53 @@ Page({
 
   // 开始日期选择
   onStartDateSelect: function() {
-    try {
-      // 使用 Vant 的日期选择器组件
-      this.setData({ showDatePicker: true, datePickerType: 'start' });
-    } catch (error) {
-      wx.showToast({ title: '日期选择失败', icon: 'none' });
+    var existing = this.data.formData.startDate;
+    var now = new Date().getTime();
+    var initialValue = now;
+    var showDatePicker = true;
+    var datePickerType = 'start';
+    
+    if (existing) {
+      var parsed = this.parseDatetimeString(existing);
+      if (parsed > 0) {
+        initialValue = parsed;
+      }
     }
+    
+    this.setData({
+      startDatetimeValue: initialValue,
+      startDatetimeMin: now,
+      datePickerType: datePickerType,
+      showDatePicker: showDatePicker
+    });
+  },
+
+  onStartDatetimeConfirm: function(e) {
+    var timestamp = e.detail;
+    var selectedStr = this.formatDatetime(timestamp);
+    
+    var errorMsg = this.validateStartDatetime(selectedStr);
+    if (errorMsg) {
+      wx.showToast({ title: errorMsg, icon: 'none', duration: 3000 });
+      return;
+    }
+    
+    this.setData({
+      'formData.startDate': selectedStr,
+      showDatePicker: false,
+      startDatetimeValue: timestamp
+    });
+  },
+
+  onStartDatetimeCancel: function() {
+    this.setData({ showDatePicker: false });
   },
 
   // 结束日期选择
   onEndDateSelect: function() {
     try {
-      // 使用 Vant 的日期选择器组件
       this.setData({ showDatePicker: true, datePickerType: 'end' });
     } catch (error) {
-      console.error('日期选择失败:', error);
       wx.showToast({ title: '日期选择失败', icon: 'none' });
     }
   },
@@ -822,11 +868,8 @@ Page({
 
   // 日历选择事件（自定义组件）
   onCalendarSelect: function(e) {
-    const selectedDate = e.detail.value;
-    
-    if (this.data.datePickerType === 'start') {
-      this.setData({ 'formData.startDate': selectedDate });
-    } else {
+    var selectedDate = e.detail.value;
+    if (this.data.datePickerType === 'end') {
       this.setData({ 'formData.endDate': selectedDate });
     }
   },
@@ -839,5 +882,41 @@ Page({
   // 日期选择取消
   onDateCancel: function() {
     this.setData({ showDatePicker: false });
+  },
+
+  formatDatetime: function(timestamp) {
+    var date = new Date(timestamp);
+    var year = date.getFullYear();
+    var month = String(date.getMonth() + 1).padStart(2, '0');
+    var day = String(date.getDate()).padStart(2, '0');
+    var hour = String(date.getHours()).padStart(2, '0');
+    var minute = String(date.getMinutes()).padStart(2, '0');
+    return year + '-' + month + '-' + day + ' ' + hour + ':' + minute;
+  },
+
+  parseDatetimeString: function(datetimeStr) {
+    if (!datetimeStr) return 0;
+    var parts = datetimeStr.split(' ');
+    if (parts.length === 2) {
+      return new Date(parts[0] + 'T' + parts[1] + ':00').getTime();
+    }
+    return new Date(datetimeStr + 'T00:00:00').getTime();
+  },
+
+  validateStartDatetime: function(datetimeStr) {
+    if (!datetimeStr) return null;
+    
+    var selectedTime = this.parseDatetimeString(datetimeStr);
+    if (selectedTime <= 0) return null;
+    
+    var now = new Date().getTime();
+    
+    if (selectedTime < now) {
+      return '开始时间不能早于当前时间。' + '\n' +
+             '当前时间：' + this.formatDatetime(now) + '\n' +
+             '请选择当前时间或之后的时间点。';
+    }
+    
+    return null;
   }
-});
+};
